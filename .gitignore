@@ -1,7 +1,7 @@
-token.json
-credentials.json
-data.xlsx
+*.json
+*.xlsx
 
 # Venv
 ppwl
 __pycache__
+*.csv

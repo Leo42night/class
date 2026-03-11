@@ -4,13 +4,8 @@ import pandas as pd
 service = get_service()
 
 course_id = "825125683344"
-coursework_id = "825694572407"
-
-# 825125683344 - Praktikum PWL 2026 A
-# 825694572407
-
-# 825266594962 - Praktikum PWL 2026 B
-# coursework_id = "845616427806"
+coursework_id = "847559064760"
+# 847559064760
 
 submissions = service.courses().courseWork().studentSubmissions().list(
     courseId=course_id,
@@ -58,8 +53,8 @@ print("\nHasil:")
 for item in data_sorted:
     print(f"{item['name']} | {item['github']}")
 
-# simpan ke dataframe
-df = pd.DataFrame(data_sorted)
+# # simpan ke dataframe
+# df = pd.DataFrame(data_sorted)
 
-# simpan ke excel
-df.to_excel("data.xlsx", index=False)
+# # simpan ke excel
+# df.to_excel("data.xlsx", index=False)
