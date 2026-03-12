@@ -15,6 +15,7 @@ coursework = service.courses().courseWork().list(
 for work in coursework.get("courseWork", []):
     print(work["id"], "-", work["title"])
     
+# --- Praktikum PWL 2026 A ---
 # 851096517087 - 6# Monorepo (phase 1 & 2)
 # 825216058131 - Demografi Peserta Kelas PPWL A
 # 846333972549 - #4 Middleware & Validation
