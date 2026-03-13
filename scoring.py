@@ -6,22 +6,24 @@ from googleapiclient.discovery import build
 
 SERVICE_ACCOUNT_FILE = "service-account.json"
 
+# Assignment
+tugas_ke = 4
+
 # PPWL-A =========================
-name_class = "ppwl-a"
-SPREADSHEET_ID = "REMOVED_SECRET"
-course_id = "825125683344"
-coursework_id = "847559064760"
+# name_class = "ppwl-a"
+# SPREADSHEET_ID = "REMOVED_SECRET"
+# course_id = "825125683344"
+# coursework_id = "847559064760"
+# range_sheet = f"ppwl{tugas_ke}!B2:B23"
+
 
 
 # PPWL-B =========================
-# name_class = "ppwl-b"
-# SPREADSHEET_ID = ""
-# course_id = "825266594962"
-# coursework_id = ""
-
-# Assignment
-tugas_ke = 5
-range_sheet = "ppwl5!B2:B23"
+name_class = "ppwl-b"
+SPREADSHEET_ID = "REMOVED_SECRET"
+course_id = "825266594962"
+coursework_id = ""
+range_sheet = f"ppwl{tugas_ke}!B2:B37"
 
 creds_sheet = Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=["https://www.googleapis.com/auth/spreadsheets"]
@@ -163,12 +165,13 @@ body = {
     "data": updates
 }
 
-# service_sheet.spreadsheets().values().batchUpdate(
-#     spreadsheetId=SPREADSHEET_ID,
-#     body=body
-# ).execute()
+service_sheet.spreadsheets().values().batchUpdate(
+    spreadsheetId=SPREADSHEET_ID,
+    body=body
+).execute()
 
 print(f"✅ Nilai berhasil dimasukkan ke GoogleSheet {name_class}.")
+exit()
 
 # =========================
 # UPDATE SCORE IN CLASSROOM SUBMISSION

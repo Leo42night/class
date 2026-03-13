@@ -26,4 +26,7 @@ def list_and_check_permissions(course_id):
         print(f"{title:<30} | {work_id:<15} | {status}")
 
 # Usage
+# 825125683344 - Praktikum PWL 2026 A
+# 825266594962 - Praktikum PWL 2026 B
 list_and_check_permissions("825125683344")
+# list_and_check_permissions("825266594962")
