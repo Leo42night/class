@@ -1,5 +1,5 @@
 # sudah di implementasi di func/scoring.py
-# templating score dari txt ke spreadsheet & classroom
+# templating score dari data_score/*.txt ke spreadsheet & classroom
 
 import sys
 import os

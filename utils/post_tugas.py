@@ -1,4 +1,5 @@
 # buat template Tugas pakai script python (agar dapat dinilai juga lewat python)
+# Fitur sudah diimplementasi di func/post_coursework.py
 
 import datetime
 from config.cred import get_service_courses

@@ -12,6 +12,7 @@ Untuk pengajar dalam mengelola classroom. Post tugas. Ambil data tugas (link Git
 
 Stuktur:
 ```bash
+setup.py # CLI App untuk menu yg jarang dipakai (setup name & Github profile in SpreadSheet)
 main.py # CLI App yang punya beberapa fungsi (perlu setup config\env.py)
 func/ # fitur-fitur yang diakses main.py
 utils/ # fungsi tunggal untuk menjalankan perintah khusus & development testing.
@@ -65,8 +66,9 @@ Save as **service-account.json**
 }
 ```
 📩 **Tambahkan email** ke file spreadsheet.
-
 Setelah di-setup kita dapat akses Classroom & Spreadsheet.
+
+📩 **Tambahkan SPREADSHEET_ID** ke **.env**.
 
 ## **Publish Tugas**
 Deskripsi tugas dapat di format pakai tools:

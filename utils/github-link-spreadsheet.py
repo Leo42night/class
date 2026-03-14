@@ -1,3 +1,4 @@
+# Mengisi data Nama & Link Profile Github ke Spreadsheet dari hasil submisi tugas (link github)
 # ambil username github di spreadsheet, lalu berikan link github.com/<username> yang sesuai value username
 # jadikan link tersebut sebagai request
 import sys
@@ -7,7 +8,7 @@ sys.path.append(
     os.path.dirname(os.path.dirname(__file__))
 )  # agar import env dapat diakses
 from config.env import env
-from config.cred import service
+from config.cred import get_service_sheets
 
 # DATA
 SPREADSHEET_ID = env.SPREADSHEET_ID_A
@@ -19,7 +20,7 @@ RANGE = f"Nilai!C{ROW_AWAL}:C{N_STUDENT + ROW_AWAL - 1}"
 
 # Ambil data dari spreadsheet
 result = (
-    service.spreadsheets()
+    get_service_sheets.spreadsheets()
     .values()
     .get(spreadsheetId=SPREADSHEET_ID, range=RANGE)
     .execute()
