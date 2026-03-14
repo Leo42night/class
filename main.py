@@ -1,4 +1,5 @@
 import sys
+import traceback
 from config.cred import get_service_courses
 from func.github_link_sheet import export_github
 from func.scoring import run_scoring
@@ -87,6 +88,7 @@ def menu_loop(course_id, course_name, course_code):
 
             except Exception as e:
                 print(f"An exception occurred: {e}")
+                print(traceback.print_exc())
 
         elif choice == "2":
             run_data_tugas(course_id)

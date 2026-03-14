@@ -18,7 +18,7 @@ def _get_tab_name(service_sheets, spreadsheet_id, tugas_ke):
         .execute()
     )
     prefix = f"{tugas_ke}#"
-    print(f"Spreadsheet: periksa tab dengan prefix '{prefix}'")
+    print(f"\nSpreadsheet: periksa tab dengan prefix '{prefix}'...")
     for sheet in meta.get("sheets", []):
         title = sheet["properties"]["title"]
         if title.startswith(prefix):
@@ -109,7 +109,6 @@ def export_github(course_id, coursework_id, spreadsheet_id, n_student, course_co
 
     # urutkan alphabetically agar konsisten dengan sheet
     classroom_data.sort(key=lambda x: x["name"].casefold())
-
     # =============================
     # 2. Ambil tab & codename dari sheet
     # =============================
@@ -133,6 +132,13 @@ def export_github(course_id, coursework_id, spreadsheet_id, n_student, course_co
 
     name_col_i = _COL_INDEX[NAME_COL]
     repo_col_i = _COL_INDEX[REPO_COL]
+    
+    special_case = {
+        "christian": "dr C"
+    }
+    
+    print(f"codename_to_idx: {codename_to_idx}")
+    print(f"codenames raw: {codenames}")
 
     for entry in classroom_data:
         name = entry["name"]
@@ -142,18 +148,23 @@ def export_github(course_id, coursework_id, spreadsheet_id, n_student, course_co
         matched_idx = None
         name_lower  = name.casefold()
         for cn, idx in codename_to_idx.items():
-            # token = bagian setelah '_' jika ada
+            # token = bagian setelah '_' pertama jika ada
             token = cn.split("_")[-1] if "_" in cn else cn
+            print(f"  {cn} - {name} → {token}")
             if token in name_lower:
                 matched_idx = idx
                 break
+            if token in special_case and special_case[token].lower() in name_lower:
+                matched_idx = idx
+                break
+
 
         if matched_idx is None:
-            print(f"  ⚠️  Tidak ada codename untuk '{name}', skip.")
+            print(f"  ⚠️  Tidak ada codename untuk '{name}', Skip (tambah di {tab_name}!{NAME_COL}...).")
             continue
 
         row_index = ROW_START - 1 + matched_idx   # 0-based untuk API
-
+        # print(f"LOOP:  {name} → {repo or '(tidak ada)'}")
         # tulis name ke NAME_COL
         requests.append({
             "updateCells": {
@@ -224,6 +235,7 @@ def export_github(course_id, coursework_id, spreadsheet_id, n_student, course_co
         to_write = [e for e in zero_score if e.split("\n")[0] not in existing_content]
  
         with open(score_path, "a", encoding="utf-8") as f:
+            f.write("\n") # pastikan tidak 1 line
             for entry in to_write:
                 f.write(entry + "\n")
  
