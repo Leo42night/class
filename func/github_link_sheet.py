@@ -1,39 +1,33 @@
-from auth import get_service
-from google.oauth2.service_account import Credentials
-from googleapiclient.discovery import build
+from config.cred import get_service_courses, get_service_sheets
 
-SERVICE_ACCOUNT_FILE = "service-account.json"
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
-# masukkan link github ke spreadsheet, ambil link ke codename buat git clone 
+# masukkan link github ke spreadsheet, ambil link ke codename buat git clone
 def export_github(course_id, coursework_id, spreadsheet_id, n_student, tugas_ke):
 
-    service_classroom = get_service()
-
-    creds = Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE,
-        scopes=SCOPES
-    )
-
-    sheets = build("sheets", "v4", credentials=creds)
+    service_classroom = get_service_courses()
+    sheets = get_service_sheets()
 
     print("\nMengambil submission dari Google Classroom...")
 
-    submissions = service_classroom.courses().courseWork().studentSubmissions().list(
-        courseId=course_id,
-        courseWorkId=coursework_id
-    ).execute()
+    submissions = (
+        service_classroom.courses()
+        .courseWork()
+        .studentSubmissions()
+        .list(courseId=course_id, courseWorkId=coursework_id)
+        .execute()
+    )
 
     github_map = {}
 
     for sub in submissions.get("studentSubmissions", []):
-
         user_id = sub["userId"]
 
-        student = service_classroom.courses().students().get(
-            courseId=course_id,
-            userId=user_id
-        ).execute()
+        student = (
+            service_classroom.courses()
+            .students()
+            .get(courseId=course_id, userId=user_id)
+            .execute()
+        )
 
         name = student["profile"]["name"]["fullName"]
 
@@ -43,13 +37,14 @@ def export_github(course_id, coursework_id, spreadsheet_id, n_student, tugas_ke)
 
         for att in attachments:
             if "link" in att:
-
                 url = att["link"]["url"]
 
                 if "github.com" in url:
-                    parts = url.replace(
-                        "https://github.com/", ""
-                    ).replace(".git", "").split("/")
+                    parts = (
+                        url.replace("https://github.com/", "")
+                        .replace(".git", "")
+                        .split("/")
+                    )
 
                     repo = parts[0] + "/" + parts[1] if len(parts) > 1 else parts[0]
                     break
@@ -62,30 +57,34 @@ def export_github(course_id, coursework_id, spreadsheet_id, n_student, tugas_ke)
     # Ambil nama dari spreadsheet
     # =============================
 
-    range_name = f"ppwl{tugas_ke}!B2:B{n_student+1}"
+    range_name = f"ppwl{tugas_ke}!B2:B{n_student + 1}"
     print(f"Mengambil nama dari {range_name}")
 
-    sheet_data = sheets.spreadsheets().values().get(
-        spreadsheetId=spreadsheet_id,
-        range=range_name
-    ).execute()
+    sheet_data = (
+        sheets.spreadsheets()
+        .values()
+        .get(spreadsheetId=spreadsheet_id, range=range_name)
+        .execute()
+    )
 
     names = sheet_data.get("values", [])
-    
+
     # =============================
     # Ambil codename dari spreadsheet
     # =============================
 
-    range_name = f"ppwl{tugas_ke}!F2:F{n_student+1}"
+    range_name = f"ppwl{tugas_ke}!F2:F{n_student + 1}"
     print(f"Mengambil codename dari {range_name}")
 
-    sheet_code = sheets.spreadsheets().values().get(
-        spreadsheetId=spreadsheet_id,
-        range=range_name
-    ).execute()
+    sheet_code = (
+        sheets.spreadsheets()
+        .values()
+        .get(spreadsheetId=spreadsheet_id, range=range_name)
+        .execute()
+    )
 
     codenames = sheet_code.get("values", [])
-    
+
     # =============================
     # Pasangkan name + codename
     # =============================
@@ -93,7 +92,6 @@ def export_github(course_id, coursework_id, spreadsheet_id, n_student, tugas_ke)
     clone_commands = []
 
     for i, row in enumerate(names):
-
         name = row[0].strip()
         codename = ""
 
@@ -122,9 +120,7 @@ def export_github(course_id, coursework_id, spreadsheet_id, n_student, tugas_ke)
 
     print("clone.txt berhasil dibuat")
 
-    spreadsheet_meta = sheets.spreadsheets().get(
-        spreadsheetId=spreadsheet_id
-    ).execute()
+    spreadsheet_meta = sheets.spreadsheets().get(spreadsheetId=spreadsheet_id).execute()
 
     sheet_id = None
 
@@ -135,7 +131,6 @@ def export_github(course_id, coursework_id, spreadsheet_id, n_student, tugas_ke)
     requests = []
 
     for i, row in enumerate(names):
-
         if not row:
             continue
 
@@ -147,37 +142,36 @@ def export_github(course_id, coursework_id, spreadsheet_id, n_student, tugas_ke)
 
         url = f"https://github.com/{repo}"
 
-        requests.append({
-            "updateCells": {
-                "start": {
-                    "sheetId": sheet_id,
-                    "rowIndex": i + 1,
-                    "columnIndex": 2
-                },
-                "rows": [{
-                    "values": [{
-                        "userEnteredValue": {
-                            "stringValue": repo
-                        },
-                        "textFormatRuns": [{
-                            "startIndex": 0,
-                            "format": {
-                                "link": {
-                                    "uri": url
-                                },
-                                "underline": True
-                            }
-                        }]
-                    }]
-                }],
-                "fields": "userEnteredValue,textFormatRuns"
+        requests.append(
+            {
+                "updateCells": {
+                    "start": {"sheetId": sheet_id, "rowIndex": i + 1, "columnIndex": 2},
+                    "rows": [
+                        {
+                            "values": [
+                                {
+                                    "userEnteredValue": {"stringValue": repo},
+                                    "textFormatRuns": [
+                                        {
+                                            "startIndex": 0,
+                                            "format": {
+                                                "link": {"uri": url},
+                                                "underline": True,
+                                            },
+                                        }
+                                    ],
+                                }
+                            ]
+                        }
+                    ],
+                    "fields": "userEnteredValue,textFormatRuns",
+                }
             }
-        })
+        )
 
     if requests:
         sheets.spreadsheets().batchUpdate(
-            spreadsheetId=spreadsheet_id,
-            body={"requests": requests}
+            spreadsheetId=spreadsheet_id, body={"requests": requests}
         ).execute()
 
     print("Update spreadsheet selesai.")

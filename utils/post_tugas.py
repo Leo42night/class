@@ -1,10 +1,11 @@
 # buat template Tugas pakai script python (agar dapat dinilai juga lewat python)
 
 import datetime
-from auth import get_service
+from config.cred import get_service_courses
+
 
 def create_formatted_assignment(course_id):
-    service = get_service()
+    service = get_service_courses()
 
     # 1. Title
     title = "6# Monorepo (phase 1 & 2)"
@@ -22,14 +23,24 @@ def create_formatted_assignment(course_id):
     due_date = datetime.date.today() + datetime.timedelta(days=5)
     # print(due_date)
     # exit()
-    
+
     # 4. Assignment Body
     assignment_body = {
         "title": title,
         "description": description,
         "materials": [
-            {"link": {"url": "https://drive.google.com/file/d/1TDEnk29_nNXeQ83_KC6KMBV74SyLZdXh/view?usp=sharing", "title": "contoh-phase-1-success.png"}},
-            {"link": {"url": "https://drive.google.com/file/d/1GvzxvnB9kwB42ksMhS5pxoMhtY-A-Dtz/view?usp=sharing", "title": "contoh-phase-2-success.png"}}
+            {
+                "link": {
+                    "url": "https://drive.google.com/file/d/1TDEnk29_nNXeQ83_KC6KMBV74SyLZdXh/view?usp=sharing",
+                    "title": "contoh-phase-1-success.png",
+                }
+            },
+            {
+                "link": {
+                    "url": "https://drive.google.com/file/d/1GvzxvnB9kwB42ksMhS5pxoMhtY-A-Dtz/view?usp=sharing",
+                    "title": "contoh-phase-2-success.png",
+                }
+            },
         ],
         "state": "PUBLISHED",
         "maxPoints": 100,
@@ -37,31 +48,34 @@ def create_formatted_assignment(course_id):
         "dueDate": {
             "year": due_date.year,
             "month": due_date.month,
-            "day": due_date.day
+            "day": due_date.day,
         },
         "dueTime": {
-            "hours": 16, # menyesuaikan UTC +7: 16:59 UTC +7 = 23:59 WIB
-            "minutes": 59
-        }
+            "hours": 16,  # menyesuaikan UTC +7: 16:59 UTC +7 = 23:59 WIB
+            "minutes": 59,
+        },
     }
 
     try:
-        coursework = service.courses().courseWork().create(
-            courseId=course_id, 
-            body=assignment_body
-        ).execute()
-        
+        coursework = (
+            service.courses()
+            .courseWork()
+            .create(courseId=course_id, body=assignment_body)
+            .execute()
+        )
+
         print("✅ Assignment created successfully!")
         print(f"ID: {coursework.get('id')}")
         print(f"Link: {coursework.get('alternateLink')}")
-        return coursework.get('id')
-    
+        return coursework.get("id")
+
     except Exception as e:
         print(f"❌ Failed to create assignment: {e}")
         return None
 
+
 # Usage
 
 # COURSE_ID = "825125683344" # Praktikum PWL 2026 A
-COURSE_ID = "825266594962" # Praktikum PWL 2026 B
+COURSE_ID = "825266594962"  # Praktikum PWL 2026 B
 create_formatted_assignment(COURSE_ID)

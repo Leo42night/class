@@ -1,12 +1,13 @@
 import sys
-from auth import get_service
+from cred import get_service_courses
+
 
 def list_and_check_permissions(course_id):
-    service = get_service()
-    
+    service = get_service_courses()
+
     print(f"--- Assignment Audit for Course: {course_id} ---")
     results = service.courses().courseWork().list(courseId=course_id).execute()
-    coursework = results.get('courseWork', [])
+    coursework = results.get("courseWork", [])
 
     if not coursework:
         print("No assignments found in this course.")
@@ -17,14 +18,15 @@ def list_and_check_permissions(course_id):
     print("-" * 60)
 
     for item in coursework:
-        title = item.get('title', 'No Title')[:28]
-        work_id = item.get('id')
-        
+        title = item.get("title", "No Title")[:28]
+        work_id = item.get("id")
+
         # This is the key field:
-        can_edit = item.get('associatedWithDeveloper', False)
-        
+        can_edit = item.get("associatedWithDeveloper", False)
+
         status = "✅ YES" if can_edit else "❌ NO (UI Created)"
         print(f"{title:<30} | {work_id:<15} | {status}")
+
 
 # Usage
 if __name__ == "__main__":

@@ -1,67 +1,27 @@
 import sys
-from auth import get_service
+from config.cred import get_service_courses
 from func.github_link_sheet import export_github
 from func.scoring import run_scoring
-
-DATA_FILE = "init/courses.txt"
-
-CLASS_CONFIG = {
-    "A": {
-        "spreadsheet": "REMOVED_SECRET",
-        "n_student": 22,
-        "name_class": "a",
-    },
-    "B": {
-        "spreadsheet": "REMOVED_SECRET",
-        "n_student": 36,
-        "name_class": "b",
-    },
-}
+from func.post_coursework import run_data_tugas
+from config.env import env
 
 
 def get_coursework(course_id):
-    service = get_service()
+    service = get_service_courses()
     results = service.courses().courseWork().list(courseId=course_id).execute()
     return results.get("courseWork", [])
-     
 
 
-def get_course_by_code(code):
-    with open(DATA_FILE, "r", encoding="utf-8") as f:
-        for line in f:
-            lines = line.strip().split("|")
-            if code == lines[0]:
-                cid, name = lines[1], lines[2]
-                return cid, name
-    return None, None
-
-
-def list_coursework(course_id, course_name):
-    service = get_service()
-    print(f"\n=== Coursework: {course_name} ===")
-    results = service.courses().courseWork().list(courseId=course_id).execute()
-    coursework = results.get("courseWork", [])
-
-    if not coursework:
-        print("No assignments found.")
-        return
-
-    print(f"\n{'Title':<30} | {'ID':<15} | {'Can Edit?':<10}")
-    print("-" * 60)
-
-    for item in coursework:
-        title = item.get("title", "No Title")[:28]
-        work_id = item.get("id")
-        can_edit = item.get("associatedWithDeveloper", False)
-        status = "✅ YES" if can_edit else "❌ NO (UI Created)"
-        print(f"{title:<30} | {work_id:<15} | {status}")
+def get_course_by_code(code):  # 'a' or 'b' -> cid, course_name
+    cid = env.COURSE_ID_B if code.lower() == "b" else env.COURSE_ID_A
+    return cid, f"Praktikum PWL 2026 {code.upper()}"
 
 
 def work_menu(course_id, course_code, work):
-    cfg = CLASS_CONFIG[course_code]
+    cfg = env.get_config(course_code)
 
     while True:
-        tugas_ke = int(work['title'].split("#")[0])
+        tugas_ke = int(work["title"].split("#")[0])
         print(f"\nWork: {work['title']} (Tugas ke: {tugas_ke})")
         print("1. Ambil GitHub → Clone & Spreadsheet")
         print("2. Input Scoring → Sheet & Classroom")
@@ -71,11 +31,7 @@ def work_menu(course_id, course_code, work):
 
         if action == "1":
             export_github(
-                course_id,
-                work["id"],
-                cfg["spreadsheet"],
-                cfg["n_student"],
-                tugas_ke
+                course_id, work["id"], cfg["spreadsheet"], cfg["n_student"], tugas_ke
             )
 
         elif action == "2":
@@ -84,7 +40,7 @@ def work_menu(course_id, course_code, work):
                 coursework_id=work["id"],
                 spreadsheet_id=cfg["spreadsheet"],
                 name_class=cfg["name_class"],
-                tugas_ke=tugas_ke
+                tugas_ke=tugas_ke,
             )
 
         elif action == "0":
@@ -100,6 +56,7 @@ def menu_loop(course_id, course_name, course_code):
         print(f"CLASS: {course_name} [{course_code.upper()}]")
         print("====================")
         print("1. Lihat Work")
+        print("2. Post Tugas Baru")
         print("0. Keluar")
 
         choice = input("Pilih menu >> ").strip()
@@ -113,7 +70,7 @@ def menu_loop(course_id, course_name, course_code):
 
             print("\n=== Pilih Work ===")
             for i, w in enumerate(coursework, start=1):
-                can_edit = w.get('associatedWithDeveloper', False)
+                can_edit = w.get("associatedWithDeveloper", False)
                 status = "✅ YES Can Edit" if can_edit else "❌ NO (UI Created)"
                 print(f"{i}. {w['title']} | {status}")
             print("0. Kembali")
@@ -131,6 +88,9 @@ def menu_loop(course_id, course_name, course_code):
             except Exception as e:
                 print(f"An exception occurred: {e}")
 
+        elif choice == "2":
+            run_data_tugas(course_id)
+
         elif choice == "0":
             break
 
@@ -139,17 +99,9 @@ def menu_loop(course_id, course_name, course_code):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python main.py <kelas>")
-        print("Contoh: python main.py A")
-        sys.exit(1)
+    print("\n🌟 Program PPWL 2026 API (Classroom, Spreadsheet)! 🌟\n")
+    print("pakai `ppwl b` untuk kelas B\n")
+    code = sys.argv[1] if len(sys.argv) >= 2 else "a"
 
-    code = sys.argv[1].upper()
-
-    course_id, course_name = get_course_by_code(code.lower())
-
-    if not course_id:
-        print(f"Kelas [{code}] tidak ditemukan di {DATA_FILE}")
-        sys.exit(1)
-
+    course_id, course_name = get_course_by_code(code)
     menu_loop(course_id, course_name, code)

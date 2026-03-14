@@ -1,7 +1,10 @@
-*.json
+credentials.json
+service-account.json
+token_auth.json
 *.xlsx
 
 # Venv
 ppwl
 __pycache__
 *.csv
+.env

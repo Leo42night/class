@@ -1,36 +1,38 @@
 # sudah di implementasi di func/scoring.py
 # templating score dari txt ke spreadsheet & classroom
 
-import re
-from google.oauth2.service_account import Credentials
-from googleapiclient.discovery import build
+import sys
+import os
 
-SERVICE_ACCOUNT_FILE = "service-account.json"
+sys.path.append(
+    os.path.dirname(os.path.dirname(__file__))
+)  # agar import env dapat diakses
+from config.env import env
+from config.cred import service
+from config.cred import get_service_courses
+
+import re
+
 
 # Assignment
 tugas_ke = 4
 
 # PPWL-A =========================
-# name_class = "ppwl-a"
-# SPREADSHEET_ID = "REMOVED_SECRET"
-# course_id = "825125683344"
-# coursework_id = "847559064760"
-# range_sheet = f"ppwl{tugas_ke}!B2:B23"
-
+name_class = "ppwl-a"
+SPREADSHEET_ID = env.SPREADSHEET_ID_A
+course_id = "825125683344"
+coursework_id = "847559064760"
 
 
 # PPWL-B =========================
-name_class = "ppwl-b"
-SPREADSHEET_ID = "REMOVED_SECRET"
-course_id = "825266594962"
-coursework_id = ""
-range_sheet = f"ppwl{tugas_ke}!B2:B37"
+# name_class = "ppwl-b"
+# SPREADSHEET_ID = ""
+# course_id = "825266594962"
+# coursework_id = ""
 
-creds_sheet = Credentials.from_service_account_file(
-    SERVICE_ACCOUNT_FILE, scopes=["https://www.googleapis.com/auth/spreadsheets"]
-)
-
-service_sheet = build("sheets", "v4", credentials=creds_sheet)
+# Assignment
+tugas_ke = 5
+range_sheets = "ppwl5!B2:B23"
 
 # =========================
 # PARSE FILE TXT
@@ -88,10 +90,12 @@ for s in students:
 # AMBIL NAMA DARI SHEET
 # =========================
 
-sheet_data = service_sheet.spreadsheets().values().get(
-    spreadsheetId=SPREADSHEET_ID,
-    range=range_sheet
-).execute()
+sheet_data = (
+    service.spreadsheets()
+    .values()
+    .get(spreadsheetId=SPREADSHEET_ID, range=range_sheets)
+    .execute()
+)
 print("\n Sheet Key Loaded: ", sheet_data)
 
 names = sheet_data.get("values", [])
@@ -117,18 +121,14 @@ for i, row in enumerate(names):
     # Gabungkan notes, ganti baris baru dengan koma agar tetap satu baris di tabel terminal
     notes_display = ", ".join(student_info["notes"])
     notes_raw = "\n".join(student_info["notes"])
-    
-    updates.append({
-        "range": f"ppwl{tugas_ke}!D{i+2}:E{i+2}",
-        "values": [[notes_raw, score]]
-    })
 
-    table_data.append({
-        "row": i + 2,
-        "name": name,
-        "notes": notes_display,
-        "score": score
-    })
+    updates.append(
+        {"range": f"ppwl{tugas_ke}!D{i + 2}:E{i + 2}", "values": [[notes_raw, score]]}
+    )
+
+    table_data.append(
+        {"row": i + 2, "name": name, "notes": notes_display, "score": score}
+    )
 
 # --- PRINT DALAM BENTUK TABEL ---
 if table_data:
@@ -136,22 +136,21 @@ if table_data:
     template = "{:<5} | {:<25} | {:<40} | {:<6}"
     header = template.format("Row", "Name", "Notes Summary", "Score")
     separator = "-" * len(header)
-    
+
     print("\n" + separator)
     print(header)
     print(separator)
-    
+
     for item in table_data:
         # Potong notes jika terlalu panjang (>37 karakter) agar tabel tetap rapi
-        display_note = (item['notes'][:37] + '..') if len(item['notes']) > 37 else item['notes']
-        
-        print(template.format(
-            item['row'], 
-            item['name'][:25], 
-            display_note, 
-            item['score']
-        ))
-    
+        display_note = (
+            (item["notes"][:37] + "..") if len(item["notes"]) > 37 else item["notes"]
+        )
+
+        print(
+            template.format(item["row"], item["name"][:25], display_note, item["score"])
+        )
+
     print(separator)
     print(f"Total: {len(table_data)} data siap di-update.\n")
 else:
@@ -161,15 +160,12 @@ else:
 # UPDATE SHEET
 # =========================
 
-body = {
-    "valueInputOption": "USER_ENTERED",
-    "data": updates
-}
+body = {"valueInputOption": "USER_ENTERED", "data": updates}
 
-service_sheet.spreadsheets().values().batchUpdate(
-    spreadsheetId=SPREADSHEET_ID,
-    body=body
-).execute()
+# service_sheets.spreadsheets().values().batchUpdate(
+#     spreadsheetId=SPREADSHEET_ID,
+#     body=body
+# ).execute()
 
 print(f"✅ Nilai berhasil dimasukkan ke GoogleSheet {name_class}.")
 exit()
@@ -177,16 +173,17 @@ exit()
 # =========================
 # UPDATE SCORE IN CLASSROOM SUBMISSION
 # =========================
-from auth import get_service
-
 print("Konfigurasi Classroom...")
-service = get_service()
+service = get_service_courses()
 
 coursework_id2 = "851359030534"
-submissions = service.courses().courseWork().studentSubmissions().list(
-    courseId=course_id,
-    courseWorkId=coursework_id2
-).execute()
+submissions = (
+    service.courses()
+    .courseWork()
+    .studentSubmissions()
+    .list(courseId=course_id, courseWorkId=coursework_id2)
+    .execute()
+)
 
 print(f"Submit {len(submissions.get('studentSubmissions', []))} score ke Classroom...")
 # exit()
@@ -195,10 +192,9 @@ for sub in submissions.get("studentSubmissions", []):
     user_id = sub["userId"]
     submission_id = sub["id"]
 
-    student = service.courses().students().get(
-        courseId=course_id,
-        userId=user_id
-    ).execute()
+    student = (
+        service.courses().students().get(courseId=course_id, userId=user_id).execute()
+    )
 
     name = student["profile"]["name"]["fullName"].casefold()
 
@@ -214,11 +210,8 @@ for sub in submissions.get("studentSubmissions", []):
         courseId=course_id,
         courseWorkId=coursework_id2,
         id=submission_id,
-        updateMask="assignedGrade,draftGrade", 
-        body={
-            "assignedGrade": score,
-            "draftGrade": score
-        }
+        updateMask="assignedGrade,draftGrade",
+        body={"assignedGrade": score, "draftGrade": score},
     ).execute()
 
 print("✅ Nilai berhasil dimasukkan ke Classroom")

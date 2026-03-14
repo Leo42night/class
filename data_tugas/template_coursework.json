@@ -1,0 +1,15 @@
+{
+    "title": "Testing",
+    "description": "testing: ➤ kumpulkan:  𝗹𝗶𝗻𝗸 𝗿𝗲𝗽𝗼 𝗴𝗶𝘁𝗵𝘂𝗯 𝗵​̲𝘁​̲𝘁​̲𝗽​̲𝘀​̲:​̲/​̲/​̲𝗴​̲𝗶​̲𝘁​̲𝗵​̲𝘂​̲𝗯​̲.​̲𝗰​̲𝗼​̲𝗺​̲/​̲<​̲𝘂​̲𝘀​̲𝗲​̲𝗿​̲𝗻​̲𝗮​̲𝗺​̲𝗲​̲>​̲/​̲𝗽​̲𝗽​̲𝘄​̲𝗹​̲𝟲​̲-​̲𝗺​̲𝗼​̲𝗻​̲𝗼​̲𝗿​̲𝗲​̲𝗽​̲𝗼",
+    "max_points": 100,
+    "due_days_from_now": 5,
+    "due_time": { "hours": 16, "minutes": 59 }, 
+    "materials": [
+        {
+            "link": {
+                "url": "https://drive.google.com/file/d/1TDEnk29_nNXeQ83_KC6KMBV74SyLZdXh/view?usp=sharing",
+                "title": "test.png"
+            }
+        }
+    ]
+}
