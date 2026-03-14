@@ -1,11 +1,37 @@
+# setelah Lihat Work -> Pilih Work[i]
+# kode ini mengelola >> Ambil GitHub → Clone & Spreadsheet
+
 from config.cred import get_service_courses, get_service_sheets
+
+def _get_tab_name(service_sheets, spreadsheet_id, tugas_ke):
+    """
+    Cari nama tab yang punya prefix '{tugas_ke}#' di spreadsheet.
+    Contoh: tab '5#ppwl' cocok untuk tugas_ke=5.
+    Return nama tab (str), atau raise ValueError jika tidak ditemukan.
+    """
+    meta = (
+        service_sheets.spreadsheets()
+        .get(spreadsheetId=spreadsheet_id, fields="sheets.properties.title")
+        .execute()
+    )
+
+    prefix = f"{tugas_ke}#"
+    for sheet in meta.get("sheets", []):
+        title = sheet["properties"]["title"]
+        if title.startswith(prefix):
+            print(f"Tab ditemukan: '{title}'")
+            return title
+
+    raise ValueError(
+        f"Tidak ada tab dengan prefix '{prefix}' di spreadsheet {spreadsheet_id}"
+    )
 
 
 # masukkan link github ke spreadsheet, ambil link ke codename buat git clone
 def export_github(course_id, coursework_id, spreadsheet_id, n_student, tugas_ke):
 
     service_classroom = get_service_courses()
-    sheets = get_service_sheets()
+    service_sheets = get_service_sheets()
 
     print("\nMengambil submission dari Google Classroom...")
 
@@ -56,12 +82,13 @@ def export_github(course_id, coursework_id, spreadsheet_id, n_student, tugas_ke)
     # =============================
     # Ambil nama dari spreadsheet
     # =============================
+    tab_name = _get_tab_name(service_sheets, spreadsheet_id, tugas_ke)
 
-    range_name = f"ppwl{tugas_ke}!B2:B{n_student + 1}"
+    range_name = f"{tab_name}!B2:B{n_student + 1}"
     print(f"Mengambil nama dari {range_name}")
 
     sheet_data = (
-        sheets.spreadsheets()
+        service_sheets.spreadsheets()
         .values()
         .get(spreadsheetId=spreadsheet_id, range=range_name)
         .execute()
@@ -73,11 +100,11 @@ def export_github(course_id, coursework_id, spreadsheet_id, n_student, tugas_ke)
     # Ambil codename dari spreadsheet
     # =============================
 
-    range_name = f"ppwl{tugas_ke}!F2:F{n_student + 1}"
+    range_name = f"{tab_name}!F2:F{n_student + 1}"
     print(f"Mengambil codename dari {range_name}")
 
     sheet_code = (
-        sheets.spreadsheets()
+        service_sheets.spreadsheets()
         .values()
         .get(spreadsheetId=spreadsheet_id, range=range_name)
         .execute()
@@ -120,12 +147,14 @@ def export_github(course_id, coursework_id, spreadsheet_id, n_student, tugas_ke)
 
     print("clone.txt berhasil dibuat")
 
-    spreadsheet_meta = sheets.spreadsheets().get(spreadsheetId=spreadsheet_id).execute()
+    spreadsheet_meta = (
+        service_sheets.spreadsheets().get(spreadsheetId=spreadsheet_id).execute()
+    )
 
     sheet_id = None
 
     for s in spreadsheet_meta["sheets"]:
-        if s["properties"]["title"] == f"ppwl{tugas_ke}":
+        if s["properties"]["title"] == f"{tab_name}":
             sheet_id = s["properties"]["sheetId"]
 
     requests = []
@@ -157,6 +186,11 @@ def export_github(course_id, coursework_id, spreadsheet_id, n_student, tugas_ke)
                                             "format": {
                                                 "link": {"uri": url},
                                                 "underline": True,
+                                                "foregroundColor": {
+                                                    "red": 0,
+                                                    "green": 0,
+                                                    "blue": 1,
+                                                },
                                             },
                                         }
                                     ],
@@ -170,7 +204,7 @@ def export_github(course_id, coursework_id, spreadsheet_id, n_student, tugas_ke)
         )
 
     if requests:
-        sheets.spreadsheets().batchUpdate(
+        service_sheets.spreadsheets().batchUpdate(
             spreadsheetId=spreadsheet_id, body={"requests": requests}
         ).execute()
 
