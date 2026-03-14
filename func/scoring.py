@@ -1,46 +1,68 @@
 import re
 from config.cred import get_service_courses, get_service_sheets
 
+ROW_START = 2
+NAME_COL = "B"
+REPO_COL = "C"
+CODENAME_COL = "F"
+NOTE_COL = "D"
+SCORE_COL = "E"
 
-def _parse_score_txt(code_class, tugas_ke):
-    """Baca nama siswa dan file score txt, return dict students."""
-    with open("clone.txt", encoding="utf-8") as f:
-        codenames = []
-        for line in f:
-            line = line.strip()
-            codenames.append(line.split()[-1])  # ambil codename di akhir line
-    students = {n: {"notes": [], "minus": 0} for n in codenames}
-    current_name = None
 
+def _parse_score_txt(code_class, tugas_ke, codenames: list[str]):
+    """
+    Parse file *-score.txt dan pasangkan ke codenames dari spreadsheet.
+ 
+    Alur match:
+      - Baris "> adhelia" di score.txt → key 'adhelia'
+      - Dicari apakah key tersebut adalah substring dari salah satu codename
+        (misal codename 'm1_arifqu' → token 'arifqu' → match "> arifqu")
+      - Jika cocok, notes & minus dicatat ke codename tersebut
+ 
+    Parameters
+    ----------
+    codenames : list[str] — daftar codename (casefold) dari kolom F spreadsheet
+    """
+    # Build lookup: token → codename asli
+    # token = bagian setelah '_' jika ada, else codename itu sendiri
+    token_to_codename: dict[str, str] = {}
+    for cn in codenames:
+        token = cn.split("_")[-1] if "_" in cn else cn
+        token_to_codename[token] = cn
+ 
+    students = {cn: {"notes": [], "minus": 0} for cn in codenames}
+    current_codename = None
+ 
     with open(f"data_score/{code_class}-{tugas_ke}-score.txt", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
-
+ 
             if line.startswith(">"):
-                name = line[1:].strip().casefold()
-                current_name = name if name in students else None
+                key = line[1:].strip().casefold()
+                # cari codename yang token-nya cocok dengan key di score.txt
+                matched = token_to_codename.get(key)
+                current_codename = matched if matched else None
                 continue
-
+ 
             if line == "":
-                current_name = None
+                current_codename = None
                 continue
-
-            if current_name and line.startswith("-"):
-                students[current_name]["notes"].append(line)
+ 
+            if current_codename and line.startswith("-"):
+                students[current_codename]["notes"].append(line)
                 m = re.match(r"-([0-9]+)", line)
                 if m:
-                    students[current_name]["minus"] += int(m.group(1))
-
-    for name in students:
-        students[name]["score"] = 100 - students[name]["minus"]
-
+                    students[current_codename]["minus"] += int(m.group(1))
+ 
+    for cn in students:
+        students[cn]["score"] = 100 - students[cn]["minus"]
+ 
     return students
 
 
 def _get_tab_name(service_sheets, spreadsheet_id, tugas_ke):
     """
     Cari nama tab yang punya prefix '{tugas_ke}#' di spreadsheet.
-    Contoh: tab '5#ppwl' cocok untuk tugas_ke=5.
     Return nama tab (str), atau raise ValueError jika tidak ditemukan.
     """
     meta = (
@@ -61,16 +83,30 @@ def _get_tab_name(service_sheets, spreadsheet_id, tugas_ke):
     )
 
 
-def _fetch_sheets_names(service_sheets, spreadsheet_id, range_sheets):
-    """Ambil daftar nama dari sheet, return list of rows."""
+def _fetch_sheet_codenames(service_sheets, spreadsheet_id, tab_name, n_rows):
+    """
+    Ambil kolom CODENAME_COL dari tab, mulai ROW_START.
+    Return list of (row_number_1based, codename_str).
+    Baris kosong tetap disertakan agar index baris akurat.
+    """
+    range_end = ROW_START - 1 + n_rows
+    range_str = f"{tab_name}!{CODENAME_COL}{ROW_START}:{CODENAME_COL}{range_end}"
+
     result = (
         service_sheets.spreadsheets()
         .values()
-        .get(spreadsheetId=spreadsheet_id, range=range_sheets)
+        .get(spreadsheetId=spreadsheet_id, range=range_str)
         .execute()
     )
-    print("\nSheet Key Loaded:", result)
-    return result.get("values", [])
+
+    rows = result.get("values", [])
+    entries = []
+    for i in range(n_rows):
+        sheet_row = ROW_START + i
+        codename = rows[i][0].strip().casefold() if i < len(rows) and rows[i] else ""
+        entries.append((sheet_row, codename))
+
+    return entries
 
 
 def _print_table(table_data):
@@ -78,8 +114,8 @@ def _print_table(table_data):
         print("⚠️  Tidak ada data siswa yang cocok ditemukan.")
         return
 
-    template = "{:<5} | {:<25} | {:<40} | {:<6}"
-    header = template.format("Row", "Name", "Notes Summary", "Score")
+    template = "{:<5} | {:<20} | {:<40} | {:<6}"
+    header = template.format("Row", "Codename", "Notes Summary", "Score")
     sep = "-" * len(header)
 
     print(f"\n{sep}\n{header}\n{sep}")
@@ -87,15 +123,13 @@ def _print_table(table_data):
         note_short = (
             (item["notes"][:37] + "..") if len(item["notes"]) > 37 else item["notes"]
         )
-        print(
-            template.format(item["row"], item["name"][:25], note_short, item["score"])
-        )
+        print(template.format(item["row"], item["codename"][:20], note_short, item["score"]))
 
     print(sep)
     print(f"Total: {len(table_data)} data siap di-update.\n")
 
 
-def run_scoring(course_id, coursework_id, spreadsheet_id, name_class, tugas_ke):
+def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke):
     """
     Entry point yang dipanggil dari work_menu.
 
@@ -104,53 +138,55 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, name_class, tugas_ke):
     course_id       : str   — ID kelas di Classroom
     coursework_id   : str   — ID tugas di Classroom
     spreadsheet_id  : str   — ID Google Sheet kelas
-    name_class      : str   — prefix file, misal 'a'
+    course_code     : str   — prefix file, misal 'a'
     tugas_ke        : int   — nomor tugas
     """
 
-    # --- 1. Parse file txt ---
-    students = _parse_score_txt(name_class, tugas_ke)
-
-    # --- 2. Ambil Codename dari Sheet ---
+    # --- 1. Ambil tab & codename dari Sheet ---
     service_sheets = get_service_sheets()
     tab_name = _get_tab_name(service_sheets, spreadsheet_id, tugas_ke)
-    range_sheets = f"{tab_name}!F2:F{2 + 40}"
-    names_rows = _fetch_sheets_names(service_sheets, spreadsheet_id, range_sheets)
-
+ 
+    # ambil dengan buffer baris agar tidak terpotong
+    sheet_entries = _fetch_sheet_codenames(service_sheets, spreadsheet_id, tab_name, 50)
+ 
+    # ekstrak list codename (non-empty) sebagai sumber kebenaran
+    codenames = [cn for _, cn in sheet_entries if cn]
+ 
+    # --- 2. Parse file txt, pasangkan ke codenames dari sheet ---
+    students = _parse_score_txt(course_code, tugas_ke, codenames)
+    print(f"Score loaded: {len(students)} codename dari spreadsheet.")
+ 
     updates = []
     table_data = []
 
-    for i, row in enumerate(names_rows):
-        if not row:
-            continue
-        # print("tampilkan row")
-        # print("\n")
-        # print(row[0])
-        # print("\n")
-        # print(row)
-        # exit()
-        name = row[0]
-        key = name.casefold()
-
-        if key not in students:
+    for sheet_row, codename in sheet_entries:
+        if not codename:
             continue
 
-        info = students[key]
+        if codename not in students:
+            continue
+
+        info = students[codename]
         score = info["score"]
         notes_display = ", ".join(info["notes"])
         notes_raw = "\n".join(info["notes"])
 
-        updates.append(
-            {"range": f"{tab_name}!D{i + 2}:E{i + 2}", "values": [[notes_raw, score]]}
-        )
+        # tulis ke kolom NOTE_COL & SCORE_COL pada baris yang sama
+        updates.append({
+            "range": f"{tab_name}!{NOTE_COL}{sheet_row}:{SCORE_COL}{sheet_row}",
+            "values": [[notes_raw, score]]
+        })
 
-        table_data.append(
-            {"row": i + 2, "name": name, "notes": notes_display, "score": score}
-        )
+        table_data.append({
+            "row": sheet_row,
+            "codename": codename,
+            "notes": notes_display,
+            "score": score
+        })
 
     _print_table(table_data)
 
-    # --- 3. Konfirmasi sebelum update ---
+    # --- 3. Konfirmasi sebelum update Sheet ---
     confirm = input("Update ke Google Sheet? (y/n) >> ").strip().lower()
     if confirm == "y":
         service_sheets.spreadsheets().values().batchUpdate(
@@ -190,13 +226,20 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, name_class, tugas_ke):
             .execute()
         )
 
-        name = student["profile"]["name"]["fullName"].casefold()
+        fullname = student["profile"]["name"]["fullName"].casefold()
 
-        if name not in students:
+        # cari codename yang cocok dengan fullname student
+        matched_codename = None
+        for codename in students:
+            if codename in fullname or any(codename in word for word in fullname.split()):
+                matched_codename = codename
+                break
+
+        if not matched_codename:
             continue
 
-        score = students[name]["score"]
-        print(f"  Update {name} → {score}")
+        score = students[matched_codename]["score"]
+        print(f"  Update {fullname} ({matched_codename}) → {score}")
 
         service.courses().courseWork().studentSubmissions().patch(
             courseId=course_id,

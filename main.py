@@ -31,7 +31,7 @@ def work_menu(course_id, course_code, work):
 
         if action == "1":
             export_github(
-                course_id, work["id"], cfg["spreadsheet"], cfg["n_student"], tugas_ke
+                course_id, work["id"], cfg["spreadsheet"], cfg["n_student"], course_code, tugas_ke
             )
 
         elif action == "2":
@@ -39,7 +39,7 @@ def work_menu(course_id, course_code, work):
                 course_id=course_id,
                 coursework_id=work["id"],
                 spreadsheet_id=cfg["spreadsheet"],
-                name_class=cfg["name_class"],
+                course_code=course_code,
                 tugas_ke=tugas_ke,
             )
 
@@ -99,8 +99,9 @@ def menu_loop(course_id, course_name, course_code):
 
 
 if __name__ == "__main__":
-    print("\n🌟 Program PPWL 2026 API (Classroom, Spreadsheet)! 🌟\n")
-    print("pakai `ppwl b` untuk kelas B\n")
+    print("run `python main.py <kelas>`")
+    print("default kelas: a, opsi -> 'a' atau 'b'")
+    print("\n🌟 Program PPWL 2026 API (Classroom, Spreadsheet)! 🌟")
     code = sys.argv[1] if len(sys.argv) >= 2 else "a"
 
     course_id, course_name = get_course_by_code(code)

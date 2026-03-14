@@ -17,13 +17,13 @@ class Env:
             return {
                 "id": self.COURSE_ID_B,
                 "spreadsheet": self.SPREADSHEET_ID_B,
-                "n_student": self.N_STUDENT_B,
+                "n_student": self.N_STUDENT_B
             }
         else:
             return {
                 "id": self.COURSE_ID_A,
                 "spreadsheet": self.SPREADSHEET_ID_A,
-                "n_student": self.N_STUDENT_A,
+                "n_student": self.N_STUDENT_A
             }
 
 env = Env()

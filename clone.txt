@@ -1,12 +1,21 @@
-git clone https://github.com/adheliaissabel/ppwl-modul4.git adhelia
-git clone https://github.com/AIAIAI-aii/ppwl4.git 
-git clone https://github.com/AndyEmerik1045/ppwl4.git 
-git clone https://github.com/chalystacaramel/PPWL4.git 
-git clone https://github.com/Vann-ui/ppwl4.git 
-git clone https://github.com/Febrianti10/ppwl4.git 
-git clone https://github.com/ghinaaa09/PPWL4.git 
-git clone https://github.com/http:/.git 
-git clone https://github.com/isanctuarry/PPWL4.git 
-git clone https://github.com/Naimakhaa/ppwl4.git 
-git clone https://github.com/Sidiq0301/ppwl4.git 
-git clone https://github.com/tesafrnta/ppwl4.git 
+git clone https://github.com/adheliaissabel/ppwl5-latihan.git adhelia
+git clone https://github.com/AIAIAI-aii/ppwl5-project-structure.git aisyah
+git clone https://github.com/AndyEmerik1045/ppwl5-latihan.git andy
+git clone https://github.com/Blackpa77/ppwl5-latihan.git arjun
+git clone https://github.com/aurell2701/ppwl5-latihan.git aurellya
+git clone https://github.com/chalystacaramel/ppwl5-latihan.git chalysta
+git clone https://github.com/dzkymbrk/ppwl5-project-structure.git dzaky
+git clone https://github.com/Vann-ui/ppwl5-latihan.git evan
+git clone https://github.com/Febrianti10/ppwl5-latihan.git febrianti
+git clone https://github.com/h1101241039-cmd/ppwl5-latihan.git florecita
+git clone https://github.com/franzxml/ppwl5-project-structure.git frans
+git clone https://github.com/ghinaaa09/ppwl5-latihan.git ghina
+git clone https://github.com/Adtriver/ppwl5-latihan.git iqlima
+git clone https://github.com/kaniaa-kr/ppwl5-latihan.git kania
+git clone https://github.com/isanctuarry/ppwl5-latihan.git khairunnisa
+git clone https://github.com/Naimakhaa/ppwl5-project-structure.git kharizma
+git clone https://github.com/arifquuu/ppwl5-project-structure.git m1_arifqu
+git clone https://github.com/MergeCel/ppwl5-latihan.git m2_marcello
+git clone https://github.com/Sidiq0301/ppwl5-latihan.git m3_rafli
+git clone https://github.com/erenorren/ppwl5-latihan.git regisha
+git clone https://github.com/tesafrnta/ppwl5-project-structure.git tesa

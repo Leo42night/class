@@ -3,36 +3,67 @@
 
 from config.cred import get_service_courses, get_service_sheets
 
+ROW_START = 2
+NAME_COL = "B"
+REPO_COL = "C"
+CODENAME_COL = "F"
+
+_COL_INDEX = {col: i for i, col in enumerate("ABCDEFGHIJKLMNOPQRSTUVWXYZ")}
+
+
 def _get_tab_name(service_sheets, spreadsheet_id, tugas_ke):
-    """
-    Cari nama tab yang punya prefix '{tugas_ke}#' di spreadsheet.
-    Contoh: tab '5#ppwl' cocok untuk tugas_ke=5.
-    Return nama tab (str), atau raise ValueError jika tidak ditemukan.
-    """
     meta = (
         service_sheets.spreadsheets()
         .get(spreadsheetId=spreadsheet_id, fields="sheets.properties.title")
         .execute()
     )
-
     prefix = f"{tugas_ke}#"
+    print(f"Spreadsheet: periksa tab dengan prefix '{prefix}'")
     for sheet in meta.get("sheets", []):
         title = sheet["properties"]["title"]
         if title.startswith(prefix):
             print(f"Tab ditemukan: '{title}'")
             return title
+    raise ValueError(f"Tidak ada tab dengan prefix '{prefix}' di spreadsheet {spreadsheet_id}")
 
-    raise ValueError(
-        f"Tidak ada tab dengan prefix '{prefix}' di spreadsheet {spreadsheet_id}"
+
+def _get_sheet_id(service_sheets, spreadsheet_id, tab_name):
+    meta = service_sheets.spreadsheets().get(spreadsheetId=spreadsheet_id).execute()
+    for s in meta["sheets"]:
+        if s["properties"]["title"] == tab_name:
+            return s["properties"]["sheetId"]
+    raise ValueError(f"Tab '{tab_name}' tidak ditemukan.")
+
+
+def _fetch_col(service_sheets, spreadsheet_id, tab_name, col, n_rows):
+    """Ambil satu kolom mulai ROW_START, return list string (di-pad '')."""
+    range_str = f"{tab_name}!{col}{ROW_START}:{col}{ROW_START - 1 + n_rows}"
+    resp = (
+        service_sheets.spreadsheets()
+        .values()
+        .get(spreadsheetId=spreadsheet_id, range=range_str)
+        .execute()
     )
+    rows = resp.get("values", [])
+    return [rows[i][0].strip() if i < len(rows) and rows[i] else "" for i in range(n_rows)]
 
 
-# masukkan link github ke spreadsheet, ambil link ke codename buat git clone
-def export_github(course_id, coursework_id, spreadsheet_id, n_student, tugas_ke):
+def _clean_name(name: str) -> str:
+    """Strip prefix 'panitia_' yang kadang muncul di nama Classroom."""
+    clean = name.strip()
+    if clean.lower().startswith("panitia_"):
+        clean = clean[len("panitia_"):]
+    return clean
+
+
+def export_github(course_id, coursework_id, spreadsheet_id, n_student, course_code, tugas_ke):
 
     service_classroom = get_service_courses()
     service_sheets = get_service_sheets()
 
+    # =============================
+    # 1. Ambil submission Classroom
+    # =============================
     print("\nMengambil submission dari Google Classroom...")
 
     submissions = (
@@ -43,7 +74,8 @@ def export_github(course_id, coursework_id, spreadsheet_id, n_student, tugas_ke)
         .execute()
     )
 
-    github_map = {}
+    # list of { name, repo } urut sesuai yang dikembalikan API
+    classroom_data: list[dict] = []
 
     for sub in submissions.get("studentSubmissions", []):
         user_id = sub["userId"]
@@ -55,157 +87,150 @@ def export_github(course_id, coursework_id, spreadsheet_id, n_student, tugas_ke)
             .execute()
         )
 
-        name = student["profile"]["name"]["fullName"]
-
+        raw_name = student["profile"]["name"]["fullName"]
+        name = _clean_name(raw_name)
         attachments = sub.get("assignmentSubmission", {}).get("attachments", [])
-
         repo = ""
 
         for att in attachments:
             if "link" in att:
                 url = att["link"]["url"]
-
                 if "github.com" in url:
                     parts = (
                         url.replace("https://github.com/", "")
                         .replace(".git", "")
                         .split("/")
                     )
-
                     repo = parts[0] + "/" + parts[1] if len(parts) > 1 else parts[0]
                     break
 
-        print(f"Memproses {name} - {repo}")
+        print(f"  {name} → {repo or '(tidak ada)'}")
+        classroom_data.append({"name": name, "repo": repo})
 
-        github_map[name.casefold()] = repo
+    # urutkan alphabetically agar konsisten dengan sheet
+    classroom_data.sort(key=lambda x: x["name"].casefold())
 
     # =============================
-    # Ambil nama dari spreadsheet
+    # 2. Ambil tab & codename dari sheet
     # =============================
     tab_name = _get_tab_name(service_sheets, spreadsheet_id, tugas_ke)
+    sheet_id = _get_sheet_id(service_sheets, spreadsheet_id, tab_name)
 
-    range_name = f"{tab_name}!B2:B{n_student + 1}"
-    print(f"Mengambil nama dari {range_name}")
+    n_rows = max(n_student, len(classroom_data))
+    codenames = _fetch_col(service_sheets, spreadsheet_id, tab_name, CODENAME_COL, n_rows)
 
-    sheet_data = (
-        service_sheets.spreadsheets()
-        .values()
-        .get(spreadsheetId=spreadsheet_id, range=range_name)
-        .execute()
-    )
-
-    names = sheet_data.get("values", [])
+    # build map: codename → index baris (0-based dari ROW_START)
+    codename_to_idx: dict[str, int] = {
+        cn.casefold(): i for i, cn in enumerate(codenames) if cn
+    }
 
     # =============================
-    # Ambil codename dari spreadsheet
+    # 3. Build requests & output
     # =============================
-
-    range_name = f"{tab_name}!F2:F{n_student + 1}"
-    print(f"Mengambil codename dari {range_name}")
-
-    sheet_code = (
-        service_sheets.spreadsheets()
-        .values()
-        .get(spreadsheetId=spreadsheet_id, range=range_name)
-        .execute()
-    )
-
-    codenames = sheet_code.get("values", [])
-
-    # =============================
-    # Pasangkan name + codename
-    # =============================
-
+    requests    = []
     clone_commands = []
+    zero_score  = []
 
-    for i, row in enumerate(names):
-        name = row[0].strip()
-        codename = ""
+    name_col_i = _COL_INDEX[NAME_COL]
+    repo_col_i = _COL_INDEX[REPO_COL]
 
-        if i < len(codenames):
-            codename = codenames[i][0].strip()
+    for entry in classroom_data:
+        name = entry["name"]
+        repo = entry["repo"]
 
-        key = name.casefold()
+        # cari baris berdasarkan kecocokan substring nama ke codename
+        matched_idx = None
+        name_lower  = name.casefold()
+        for cn, idx in codename_to_idx.items():
+            # token = bagian setelah '_' jika ada
+            token = cn.split("_")[-1] if "_" in cn else cn
+            if token in name_lower:
+                matched_idx = idx
+                break
 
-        repo = github_map.get(key, "")
+        if matched_idx is None:
+            print(f"  ⚠️  Tidak ada codename untuk '{name}', skip.")
+            continue
+
+        row_index = ROW_START - 1 + matched_idx   # 0-based untuk API
+
+        # tulis name ke NAME_COL
+        requests.append({
+            "updateCells": {
+                "start": {"sheetId": sheet_id, "rowIndex": row_index, "columnIndex": name_col_i},
+                "rows": [{"values": [{"userEnteredValue": {"stringValue": name}}]}],
+                "fields": "userEnteredValue",
+            }
+        })
 
         if repo:
-            url = f"https://github.com/{repo}.git"
-            cmd = f"git clone {url} {codename}"
-            clone_commands.append(cmd)
-            print(f"{name} -> {cmd}")
+            url = f"https://github.com/{repo}"
+            codename = codenames[matched_idx]
+
+            clone_commands.append(f"git clone {url}.git {codename}")
+
+            # tulis repo link ke REPO_COL
+            requests.append({
+                "updateCells": {
+                    "start": {"sheetId": sheet_id, "rowIndex": row_index, "columnIndex": repo_col_i},
+                    "rows": [{
+                        "values": [{
+                            "userEnteredValue": {"stringValue": repo},
+                            "textFormatRuns": [{
+                                "startIndex": 0,
+                                "format": {
+                                    "link": {"uri": url},
+                                    "underline": True,
+                                    "foregroundColor": {"red": 0, "green": 0, "blue": 1},
+                                },
+                            }],
+                        }]
+                    }],
+                    "fields": "userEnteredValue,textFormatRuns",
+                }
+            })
         else:
-            print(f"Repo tidak ditemukan untuk {name}")
+            codename = codenames[matched_idx]
+            zero_score.append(f"> {codename}\n-100 Tidak mengumpulkan tugas")
 
     # =============================
-    # Simpan ke clone.txt
+    # 4. Batch update ke sheet
     # =============================
+    if requests:
+        service_sheets.spreadsheets().batchUpdate(
+            spreadsheetId=spreadsheet_id,
+            body={"requests": requests}
+        ).execute()
+        print(f"\nUpdate {len(classroom_data)} nama & repo ke spreadsheet selesai.")
 
+    # =============================
+    # 5. Simpan clone.txt
+    # =============================
     with open("clone.txt", "w", encoding="utf-8") as f:
         for cmd in clone_commands:
             f.write(cmd + "\n")
+    print(f"clone.txt berhasil dibuat ({len(clone_commands)} repo).")
 
-    print("clone.txt berhasil dibuat")
-
-    spreadsheet_meta = (
-        service_sheets.spreadsheets().get(spreadsheetId=spreadsheet_id).execute()
-    )
-
-    sheet_id = None
-
-    for s in spreadsheet_meta["sheets"]:
-        if s["properties"]["title"] == f"{tab_name}":
-            sheet_id = s["properties"]["sheetId"]
-
-    requests = []
-
-    for i, row in enumerate(names):
-        if not row:
-            continue
-
-        name = row[0]
-        repo = github_map.get(name.casefold(), "")
-
-        if not repo:
-            continue
-
-        url = f"https://github.com/{repo}"
-
-        requests.append(
-            {
-                "updateCells": {
-                    "start": {"sheetId": sheet_id, "rowIndex": i + 1, "columnIndex": 2},
-                    "rows": [
-                        {
-                            "values": [
-                                {
-                                    "userEnteredValue": {"stringValue": repo},
-                                    "textFormatRuns": [
-                                        {
-                                            "startIndex": 0,
-                                            "format": {
-                                                "link": {"uri": url},
-                                                "underline": True,
-                                                "foregroundColor": {
-                                                    "red": 0,
-                                                    "green": 0,
-                                                    "blue": 1,
-                                                },
-                                            },
-                                        }
-                                    ],
-                                }
-                            ]
-                        }
-                    ],
-                    "fields": "userEnteredValue,textFormatRuns",
-                }
-            }
-        )
-
-    if requests:
-        service_sheets.spreadsheets().batchUpdate(
-            spreadsheetId=spreadsheet_id, body={"requests": requests}
-        ).execute()
-
-    print("Update spreadsheet selesai.")
+    # =============================
+    # 6. Simpan zero_score ke *-score.txt
+    # =============================
+    import os
+    score_path = f"data_score/{course_code}-{tugas_ke}-score.txt"
+ 
+    if os.path.exists(score_path):
+        with open(score_path, "r", encoding="utf-8") as f:
+            existing_content = f.read()
+ 
+        to_write = [e for e in zero_score if e.split("\n")[0] not in existing_content]
+ 
+        with open(score_path, "a", encoding="utf-8") as f:
+            for entry in to_write:
+                f.write(entry + "\n")
+ 
+        skipped = len(zero_score) - len(to_write)
+        print(f"{score_path} diperbarui (append): {len(to_write)} ditambah, {skipped} di-skip (sudah ada).")
+    else:
+        with open(score_path, "w", encoding="utf-8") as f:
+            for entry in zero_score:
+                f.write(entry + "\n")
+        print(f"{score_path} dibuat ({len(zero_score)} tidak mengumpulkan).")

@@ -1,108 +1,116 @@
+Poin:
+#1 10% Tutor: 4 step entri point (server.ts, app.ts, routes/user.route.ts, services/user.service.ts, repositories/user.repository.ts)
+#2 60% Mini Task: 1. refactor 
+  - config/ -> env.ts, db.ts
+  - models/user.model.ts
+  - types/user.type.ts
+  - views/user.view.ts
+  - utils/response.ts, yang berisi htmlResponse
+#3 10% 2. Tailwind Build
+#4 20% 3. Remove Secret (Filter Repo)
+
 Result:
 #1&2 [Tutor & Mini task]
-> ADHELIA ISSABEL
-> AISYAH AISYAH
--10 Tutor tidak diikuti
--60 Mini task tidak dikerjakan
-> ANDY EMERIK
--10 env.ts tidak rapi (`database.sqlite` ya, bukan `database,sqlite`. masukan semua env ke dalam `const env = {}`)
+> adhelia
+> aisyah
+-80 deadline 9 mar, submit 14 mar (telat 5 hari, -30-20-10-10-10=-80)
+-10 env.ts tidak rapi (masukan semua env ke dalam `const env = {}`, itu const PORT & NODE_ENV gk guna)
+> andy
+-10 env.ts tidak rapi ("database.sqlite" ya, bukan "database,sqlite". masukan semua env ke dalam `const env = {}`)
 -3 `user.repository.ts`, bukan `user.repositories.ts`
-> ARJUN MAHESWARA PAUNDRA
-> AURELLYA YOCELYN PRASISTA
-> CHALYSTA SETYANI
-> DZAKY MUBARAK
--10 Tutor tidak diikuti
--60 Mini task tidak dikerjakan
-> EVAN MULYA OKTAROHMAT
-> FEBRIANTI KHUMAIROH
+> arjun
+> aurellya
+> chalysta
+> dzaky
+-70 deadline 9 mar, submit 13 mar (telat 4 hari, -30-20-10-10=-70) 
+> evan
+> febrianti
 -10 src/config/db.ts (kode seeder hilang)
 -10 env.ts tidak rapi (masukan semua env ke dalam `const env = {}`)
-> FLORECITA WENNY
-> Frans Maylandgo Saragih
-> GHINA AUDHIYA KHAIRUNISA
+> florecita
+> frans
+> ghina
 -10 src/config/db.ts (kode seeder hilang)
 -20 create gagal (userService.create not exist)
 -20 delete gagal (userService.create not exist)
-> Iqlima Nur`ain
-> KANIA KIRANI
-> KHAIRUNNISA
+> iqlima
+> kania
+> khairunnisa
 -10 env.ts tidak rapi (masukan semua env ke dalam `const env = {}`)
 -15 staticPlugin tidak dipasang (css gagal load)
-> KHARIZMA RIZKIAH
+> kharizma
 -10 src/config/db.ts (kode seeder hilang)
-> M. ARIFQU WA LIIN
+> arifqu
 -10 src/config/db.ts (kode seeder hilang)
 -3 ada `src/salah` (hapus jika tidak perlu)
-> MARCELLO CHRISDIANTORO
-> MUHAMMAD RAFLI ASSIDIQ
+> marcello
+> rafli
 -15 src/config/env.ts (kode tidak lengkap)
 -10 src/config/db.ts (kode seeder hilang)
 -15 susunan view terbalik, input harus diatas list. tailwind css tidak dibuild ulang
-> REGISHA SHEREN
-> TESA FIRNA ANANTA
+> regisha
+> tesa
 -10 src/config/db.ts (kode seeder hilang)
 
 #3 Tailwind Build
-> ADHELIA ISSABEL
-> AISYAH AISYAH
--10 Tailwind build tidak dikerjakan
-> ANDY EMERIK
+> adhelia
+> aisyah
+> andy
 -3 ada `public\style.css` (hapus jika tidak perlu)
-> ARJUN MAHESWARA PAUNDRA
+> arjun
 -3 ada `public\style.css` (hapus jika tidak perlu)
-> AURELLYA YOCELYN PRASISTA
+> aurellya
 -3 ada `public\style.css` (hapus jika tidak perlu)
-> CHALYSTA SETYANI
-> DZAKY MUBARAK
--10 Tailwind build tidak dikerjakan
-> EVAN MULYA OKTAROHMAT
+> chalysta
+> dzaky
+> evan
 -3 ada `public\style.css` (hapus jika tidak perlu)
-> FEBRIANTI KHUMAIROH
+> febrianti
 -10 tailwind build failed (style.css kosong)
-> FLORECITA WENNY
-> Frans Maylandgo Saragih
-> GHINA AUDHIYA KHAIRUNISA
+> florecita
+> frans
+> ghina
 -3 ada `src\output.css` (hapus jika tidak perlu)
-> Iqlima Nur`ain
-> KANIA KIRANI
-> KHAIRUNNISA
+> iqlima
+> kania
+> khairunnisa
 -3 `src\public\css\style.css` lokasi build salah (hapus jika tidak perlu)
 -10 tailwind build failed (style.css kosong)
-> KHARIZMA RIZKIAH
-> M. ARIFQU WA LIIN
-> MARCELLO CHRISDIANTORO
-> MUHAMMAD RAFLI ASSIDIQ
-> REGISHA SHEREN
+> kharizma
+> arifqu
+> marcello
+> rafli
+> regisha
 -3 ada `src\output.css` (hapus jika tidak perlu)
-> TESA FIRNA ANANTA
+> tesa
 
 #4 Remove Secret (Filter Repo)
-> ADHELIA ISSABEL
-> AISYAH AISYAH
--15 `.env` & `database.sqlite` tidak ditambah ke `.gitignore`
-> ANDY EMERIK
-> ARJUN MAHESWARA PAUNDRA
-> AURELLYA YOCELYN PRASISTA
-> CHALYSTA SETYANI
-> DZAKY MUBARAK
--15 `.env` & `database.sqlite` tidak ditambah ke `.gitignore`
-> EVAN MULYA OKTAROHMAT
--15 `.env` & `database.sqlite` tidak ditambah ke `.gitignore`
-> FEBRIANTI KHUMAIROH
-> FLORECITA WENNY
-> Frans Maylandgo Saragih
-> GHINA AUDHIYA KHAIRUNISA
-> Iqlima Nur`ain
-> KANIA KIRANI
--15 file berisi secret masih ter ekspos
-> KHAIRUNNISA
-> KHARIZMA RIZKIAH
-> M. ARIFQU WA LIIN
-> MARCELLO CHRISDIANTORO
+> adhelia
+> aisyah
+> andy
+> arjun
+> aurellya
+> chalysta
+> dzaky
+> evan
+-20 `.env` & `database.sqlite` tidak ditambah ke `.gitignore`
+> febrianti
+> florecita
+> frans
+> ghina
+> iqlima
+> kania
+-20 file berisi secret masih ter ekspos
+> khairunnisa
+> kharizma
+> arifqu
+> marcello
 -10 `database.sqlite` tidak ditambah ke `.gitignore`
-> MUHAMMAD RAFLI ASSIDIQ
--15 tidak dilakukan filter repo (file secret ter ekspos)
-> REGISHA SHEREN
+> rafli
+-20 tidak dilakukan filter repo (file secret ter ekspos)
+> regisha
 -10 `database.sqlite` tidak ditambah ke `.gitignore`
-> TESA FIRNA ANANTA
--15 `.env` & `database.sqlite` tidak ditambah ke `.gitignore`
+> tesa
+-20 `.env` & `database.sqlite` tidak ditambah ke `.gitignore`nadylla
+> nadylla
+-100 Tidak mengumpulkan tugas
