@@ -1,3 +1,6 @@
+# Menu Fitur Setup
+# 1. Setup Spreadsheet Nama
+# 2. Setup Spreadsheet Link Github Profile
 import sys
 import os
 
@@ -8,7 +11,7 @@ sys.path.append(
 from config.cred import get_service_courses, get_service_sheets
 
 SERVICE_ACCOUNT_FILE = "service-account.json"
-TAB_NAME = "test"
+TAB_NAME = "Nilai"
 ROW_START = 3
 NAME_COL = "B"
 REPO_COL = "C"
@@ -281,7 +284,7 @@ def setup_github_profile(course_id: str, spreadsheet_id: str):
  
     # Ambil nama & codename dari sheet (urutan baris sebagai acuan)
     service_sheet = get_service_sheets()
-    range_end = ROW_START - 1 + len(students) + 10
+    range_end = ROW_START - 1 + len(students)
  
     sheet_resp = (
         service_sheet.spreadsheets()
