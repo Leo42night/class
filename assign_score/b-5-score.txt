@@ -1,0 +1,192 @@
+Poin:
+#1 10% Tutor: 4 step entri point (server.ts, app.ts, routes/user.route.ts, services/user.service.ts, repositories/user.repository.ts)
+#2 60% Mini Task: 1. refactor 
+  - config/ -> env.ts, db.ts
+  - models/user.model.ts
+  - types/user.type.ts
+  - views/user.view.ts
+  - utils/response.ts, yang berisi htmlResponse
+#3 10% 2. Tailwind Build
+#4 20% 3. Remove Secret (Filter Repo)
+
+#1&2 (tutor & task)
+> adella
+> athallah
+-10 src/config/db.ts (kode seeder hilang)
+-10 env.ts tidak lengkap (PORT doang :/?, cek process.env.* berjalan)
+-15 susunan view terbalik, input harus diatas list. tailwind css tidak dibuild ulang
+> atikoh
+> audy
+-10 Tutor tidak diikuti
+-60 Mini task tidak dikerjakan
+> christian
+> fahdil
+-5 env.ts ada double kode untuk cek process.env.* berjalan
+-3 `route.ts`, bukan `routes.ts`
+> gabriela
+-10 src/config/db.ts (kode seeder hilang)
+-10 env.ts tidak lengkap (PORT doang :/?, cek process.env.* berjalan)
+> irene
+> jesika
+> kayla
+-10 src/config/db.ts (kode seeder hilang)
+-3 `type.ts`, bukan `types.ts`
+> lubna
+-10 src/config/db.ts (kode seeder hilang)
+-10 env.ts tidak lengkap (cek process.env.* berjalan)
+> m1_fajri
+-10 src/config/db.ts (kode seeder hilang)
+-10 env.ts tidak lengkap (PORT doang :/?, cek process.env.* berjalan)
+-5 `repository.ts`, bukan `repositories.ts`. `type.ts`, bukan `types.ts`
+> m2_jihan
+-10 src/config/db.ts (kode seeder hilang)
+> m3_rashyid
+> nabil
+-10 env.ts tidak rapi (masukan semua env ke dalam `const env = {}`, jangan ada double data)
+-10 src/config/db.ts (kode seeder hilang)
+> nabila
+> nadya
+-10 src/config/db.ts (kode seeder hilang)
+> nayla
+> olivia
+> prilia
+> raden
+-10 src/config/db.ts (kode seeder hilang)
+-10 env.ts tidak lengkap (PORT & DB_FILE doang :/?, cek process.env.* berjalan)
+-15 staticPlugin tidak dipasang (css gagal load)
+-20 create gagal, 'table users has no column named role'
+> radika
+-10 Tutor tidak diikuti
+-60 Mini task tidak dikerjakan
+> rafli
+> rifa
+> rito
+-20 create gagal, \create NOT_FOUND
+-20 edit gagal, \update\1 NOT_FOUND
+> rola
+-10 Tutor tidak diikuti
+-60 Mini task tidak dikerjakan
+> saskia
+-10 env.ts tidak lengkap (PORT doang :/?, cek process.env.* berjalan)
+-20 load data gagal (no such table: users), ini karena initDB() tidak dijalankan
+> shalwa
+> syafira
+-10 src/config/db.ts (kode seeder hilang)
+-10 env.ts tidak lengkap (tambhakan NODE_ENV, cek process.env.* berjalan)
+> syarifah
+-10 env.ts tidak rapi (masukan semua env ke dalam `const env = {}`, jangan ada double data)
+> tan
+-10 src/config/db.ts (kode seeder hilang)
+> timothy
+> viona
+-10 env.ts tidak rapi (masukan semua env ke dalam `const env = {}`, jangan ada double data)
+> virsya
+-3 `route.ts`, bukan `routes.ts`
+> zulfikarnaen
+
+#3 tailwind build
+> adella
+-3 ada `src\output.css` (hapus jika tidak perlu, biar rapi)
+> athallah
+-3 ada `src\output.css` (hapus jika tidak perlu, biar rapi)
+> atikoh
+> audy
+-10 tailwind build tidak dilakukan
+> christian
+> fahdil
+> gabriela
+-3 `public/css` bukan `public/CSS` ??? jika gagal load -> -10
+> irene
+-3 ada `src\output.css` (hapus jika tidak perlu, biar rapi)
+> jesika
+> kayla
+> lubna
+> -5 bentuk build beda ???
+> m1_fajri
+> m2_jihan
+-5 ada `public\style.css` & `src\style.css` (hapus jika tidak perlu, biar rapi)
+> m3_rashyid
+> nabil
+-3 ada `src\output.css` (hapus jika tidak perlu, biar rapi)
+> nabila
+> nadya
+> nayla
+> olivia
+> prilia
+-10 tailwind build failed (style.css kosong)
+> raden
+-3 ada `public\style.css` (hapus jika tidak perlu, biar rapi)
+> radika
+-10 tailwind build tidak dilakukan
+> rafli
+> rifa
+-3 ada `src\output.css` (hapus jika tidak perlu, biar rapi)
+> rito
+-7 `public\css\input.css` letakkan di src/, bukan di public/
+> rola
+-10 tailwind build tidak dilakukan
+> saskia
+-3 src/input.css seharusnya tidak ada @source "../src/views";
+> shalwa
+> syafira
+-3 ada `src\output.css` (hapus jika tidak perlu, biar rapi)
+> syarifah
+-3 ada `src\style.css` (hapus jika tidak perlu, biar rapi)
+> tan
+> timothy
+> viona
+-3 ada `css\style.css` (hapus jika tidak perlu, biar rapi)
+> virsya
+> zulfikarnaen
+
+#4 Remove Secret (Filter Repo)
+> adella
+-20 secret ditemukan di commit "praktikum 5 - tugas 3"
+> athallah
+> atikoh
+> audy
+> christian
+> fahdil
+> gabriela
+-20 secret ditemukan di commit "issue"
+> irene
+> jesika
+-20 secret ditemukan di commit "issue"
+> kayla
+-20 secret ditemukan di commit "remove env, database, and mirror repo"
+> lubna
+-20 database.sqlite ditemukan di commit "perbaikan"
+> m1_fajri
+> m2_jihan
+-20 `users.db` (sebanding database.sqlite) ditemukan di commit "git commit"
+> m3_rashyid
+> nabil
+> nabila
+> nadya
+> nayla
+> olivia
+-20 .env & database.sqlite gagal di hapus dari history
+> prilia
+-20 .env gagal di hapus dari history
+> raden
+-20 .env & database.sqlite gagal di hapus dari history
+> radika
+> rafli
+> rifa
+-20 secret `.env2` ditemukan di commit "don"
+> rito
+> rola
+-20 filter repo tidak dilakukan
+> saskia
+-20 .env gagal di hapus dari history
+> shalwa
+-20 history commit ter-reset. commit Leo42night lenyap
+> syafira
+-20 `users.sqlite` (sebanding database.sqlite) ditemukan di commit "friday commit"
+> syarifah
+> tan
+-20 filter repo tidak dilakukan
+> timothy
+> viona
+> virsya
+> zulfikarnaen

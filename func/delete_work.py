@@ -1,3 +1,5 @@
+# delete work assignment
+
 from auth import get_service
 def delete_assignment(course_id, coursework_id):
     service = get_service() # Pastikan fungsi get_service Anda sudah siap

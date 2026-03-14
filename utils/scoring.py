@@ -1,3 +1,4 @@
+# sudah di implementasi di func/scoring.py
 # templating score dari txt ke spreadsheet & classroom
 
 import re

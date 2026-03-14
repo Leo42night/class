@@ -1,60 +1,155 @@
+import sys
 from auth import get_service
-import pandas as pd
+from func.github_link_sheet import export_github
+from func.scoring import run_scoring
 
-service = get_service()
+DATA_FILE = "init/courses.txt"
 
-course_id = "825125683344"
-coursework_id = "847559064760"
-# 847559064760
+CLASS_CONFIG = {
+    "A": {
+        "spreadsheet": "REMOVED_SECRET",
+        "n_student": 22,
+        "name_class": "a",
+    },
+    "B": {
+        "spreadsheet": "REMOVED_SECRET",
+        "n_student": 36,
+        "name_class": "b",
+    },
+}
 
-submissions = service.courses().courseWork().studentSubmissions().list(
-    courseId=course_id,
-    courseWorkId=coursework_id
-).execute()
 
-data = []
+def get_coursework(course_id):
+    service = get_service()
+    results = service.courses().courseWork().list(courseId=course_id).execute()
+    return results.get("courseWork", [])
+     
 
-for sub in submissions.get("studentSubmissions", []):
-    user_id = sub["userId"]
-    
-    student = service.courses().students().get(
-        courseId=course_id,
-        userId=user_id
-    ).execute()
-    
-    name = student["profile"]["name"]["fullName"]
-    print(f"Memproses {user_id} - {name}...")
 
-    attachments = sub.get("assignmentSubmission", {}).get("attachments", [])
-    
-    github_username = ""
-    github_username_repo = ""
+def get_course_by_code(code):
+    with open(DATA_FILE, "r", encoding="utf-8") as f:
+        for line in f:
+            lines = line.strip().split("|")
+            if code == lines[0]:
+                cid, name = lines[1], lines[2]
+                return cid, name
+    return None, None
 
-    for att in attachments:
-        if "link" in att:
-            url = att["link"]["url"]
-            if "github.com" in url:
-                # Ambil username dari URL
-                parts = url.replace("https://github.com/", "").replace(".git", "").split("/")
-                # github_username = parts[0]
-                github_username_repo = parts[0] + "/" + parts[1] if len(parts) > 1 else parts[0]
-                break
 
-    data.append({
-        "name": name,
-        "github": github_username_repo
-    })
+def list_coursework(course_id, course_name):
+    service = get_service()
+    print(f"\n=== Coursework: {course_name} ===")
+    results = service.courses().courseWork().list(courseId=course_id).execute()
+    coursework = results.get("courseWork", [])
 
-# 🔥 CASE-INSENSITIVE SORT
-data_sorted = sorted(data, key=lambda x: x["name"].casefold())
+    if not coursework:
+        print("No assignments found.")
+        return
 
-# Tampilkan hasil
-print("\nHasil:")
-for item in data_sorted:
-    print(f"{item['name']} | {item['github']}")
+    print(f"\n{'Title':<30} | {'ID':<15} | {'Can Edit?':<10}")
+    print("-" * 60)
 
-# # simpan ke dataframe
-# df = pd.DataFrame(data_sorted)
+    for item in coursework:
+        title = item.get("title", "No Title")[:28]
+        work_id = item.get("id")
+        can_edit = item.get("associatedWithDeveloper", False)
+        status = "✅ YES" if can_edit else "❌ NO (UI Created)"
+        print(f"{title:<30} | {work_id:<15} | {status}")
 
-# # simpan ke excel
-# df.to_excel("data.xlsx", index=False)
+
+def work_menu(course_id, course_code, work):
+    cfg = CLASS_CONFIG[course_code]
+
+    while True:
+        tugas_ke = int(work['title'].split("#")[0])
+        print(f"\nWork: {work['title']} (Tugas ke: {tugas_ke})")
+        print("1. Ambil GitHub → Clone & Spreadsheet")
+        print("2. Input Scoring → Sheet & Classroom")
+        print("0. Kembali")
+
+        action = input(">> ").strip()
+
+        if action == "1":
+            export_github(
+                course_id,
+                work["id"],
+                cfg["spreadsheet"],
+                cfg["n_student"],
+                tugas_ke
+            )
+
+        elif action == "2":
+            run_scoring(
+                course_id=course_id,
+                coursework_id=work["id"],
+                spreadsheet_id=cfg["spreadsheet"],
+                name_class=cfg["name_class"],
+                tugas_ke=tugas_ke
+            )
+
+        elif action == "0":
+            return
+
+        else:
+            print("Pilihan tidak valid.")
+
+
+def menu_loop(course_id, course_name, course_code):
+    while True:
+        print("\n====================")
+        print(f"CLASS: {course_name} [{course_code.upper()}]")
+        print("====================")
+        print("1. Lihat Work")
+        print("0. Keluar")
+
+        choice = input("Pilih menu >> ").strip()
+
+        if choice == "1":
+            coursework = get_coursework(course_id)
+
+            if not coursework:
+                print("Tidak ada assignment")
+                continue
+
+            print("\n=== Pilih Work ===")
+            for i, w in enumerate(coursework, start=1):
+                can_edit = w.get('associatedWithDeveloper', False)
+                status = "✅ YES Can Edit" if can_edit else "❌ NO (UI Created)"
+                print(f"{i}. {w['title']} | {status}")
+            print("0. Kembali")
+
+            choice_work = input("Pilih assignment >> ").strip()
+
+            if choice_work == "0":
+                continue
+
+            try:
+                idx = int(choice_work) - 1
+                work = coursework[idx]
+                work_menu(course_id, course_code, work)
+
+            except Exception as e:
+                print(f"An exception occurred: {e}")
+
+        elif choice == "0":
+            break
+
+        else:
+            print("Pilihan tidak valid")
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: python main.py <kelas>")
+        print("Contoh: python main.py A")
+        sys.exit(1)
+
+    code = sys.argv[1].upper()
+
+    course_id, course_name = get_course_by_code(code.lower())
+
+    if not course_id:
+        print(f"Kelas [{code}] tidak ditemukan di {DATA_FILE}")
+        sys.exit(1)
+
+    menu_loop(course_id, course_name, code)
