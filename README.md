@@ -14,11 +14,16 @@ Stuktur:
 ```bash
 setup.py # CLI App untuk menu yg jarang dipakai (setup name & Github profile in SpreadSheet)
 main.py # CLI App yang punya beberapa fungsi (perlu setup config\env.py)
+setup/ # fungsi yang dijalankan tidak rutin
 func/ # fitur-fitur yang diakses main.py
 utils/ # fungsi tunggal untuk menjalankan perintah khusus & development testing.
 data_score/ # daftar data *.txt untuk fitur scoring.py 
 data_tugas/ # daftar data *.json template tugas untuk fitur post_coursework.py 
+web/ # fungsi untuk handle data course & sheet ke/dari web ppwl
 ```
+
+## Setup
+- Sesuaikan path untuk clone repo local di `submission_get_setup.py`
 
 ## Installation
 ```bash

@@ -1,4 +1,4 @@
-# tambahkan link github repo di spreadsheet untuk value cell <username>/<repo>
+# tambahkan link github repo di sheet untuk value cell <username>/<repo>
 import sys
 import os
 

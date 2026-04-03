@@ -1,3 +1,4 @@
+# simple solo: tampilkan name & repo dari submisi
 import sys
 import os
 

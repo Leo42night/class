@@ -1,4 +1,5 @@
-# Mengisi data Nama & Link Profile Github ke Spreadsheet dari hasil submisi tugas (link github)
+# Perlu ada submisi coursework send link github dulu
+# Mengisi data Nama & Link Profile Github ke Spreadsheet (main tab) dari hasil submisi tugas (link github)
 # ambil username github di spreadsheet, lalu berikan link github.com/<username> yang sesuai value username
 # jadikan link tersebut sebagai request
 import sys

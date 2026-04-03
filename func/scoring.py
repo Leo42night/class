@@ -1,3 +1,7 @@
+# ambil nilai dari data_score/{tugas_ke}{code}-score.txt
+# masukkan score & notes ke sheet. masukkan #parameter sebagai note di {NOTE_COL}{ROW_START-1}
+# (jika ada akses API) masukkan score ke course
+
 import re
 from config.cred import get_service_courses, get_service_sheets
 
@@ -14,6 +18,7 @@ _COL_INDEX = {col: i for i, col in enumerate("ABCDEFGHIJKLMNOPQRSTUVWXYZ")}
 def _parse_score_txt(code_class, tugas_ke, codenames: list[str]):
     """
     Parse file *-score.txt dan pasangkan ke codenames dari spreadsheet.
+    Ambil parameter, notes, minus 
     """
     token_to_codename: dict[str, str] = {}
     for cn in codenames:
@@ -22,14 +27,31 @@ def _parse_score_txt(code_class, tugas_ke, codenames: list[str]):
 
     students = {cn: {"notes": [], "minus": 0} for cn in codenames}
     current_codename = None
+    parameters: list[str] = []          # ← tambah
+    in_parameter_block = False          # ← tambah
 
-    with open(f"data_score/{code_class}-{tugas_ke}-score.txt", encoding="utf-8") as f:
+    with open(f"data_score/{tugas_ke}{code_class}-score.txt", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
 
+            # ← tambah: deteksi blok #parameter
+            if line == "#parameter":
+                in_parameter_block = True
+                continue
+
+            if in_parameter_block:
+                if line == "":
+                    in_parameter_block = False  # blok selesai di baris kosong
+                    continue
+                parameters.append(line)
+                continue
+            # ← sampai sini
+
             if line.startswith(">"):
                 key = line[1:].strip().casefold()
-                matched = token_to_codename.get(key)
+                # coba exact match dulu, fallback ke token (bagian setelah "_" terakhir)
+                key_token = key.split("_")[-1] if "_" in key else key   # ← cth: codename m1_arifqu -> ariqzu
+                matched = token_to_codename.get(key) or token_to_codename.get(key_token)  # ← fix
                 current_codename = matched if matched else None
                 continue
 
@@ -46,7 +68,7 @@ def _parse_score_txt(code_class, tugas_ke, codenames: list[str]):
     for cn in students:
         students[cn]["score"] = 100 - students[cn]["minus"]
 
-    return students
+    return students, parameters          # ← tambah return parameters
 
 
 def _get_tab_name(service_sheets, spreadsheet_id, tugas_ke):
@@ -170,8 +192,10 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
     codenames = [cn for _, cn in sheet_entries if cn]
 
     # --- 2. Parse file txt ---
-    students = _parse_score_txt(course_code, tugas_ke, codenames)
+    students, parameters = _parse_score_txt(course_code, tugas_ke, codenames)   # ← unpack
     print(f"Score loaded: {len(students)} codename dari spreadsheet.")
+    if parameters:
+        print(f"Parameter ditemukan: {len(parameters)} baris.")
 
     # --- 3. Ambil score yang sudah ada di sheet ---
     existing_scores = _fetch_existing_scores(service_sheets, spreadsheet_id, tab_name, sheet_entries)
@@ -183,7 +207,6 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
 
     sheet_id   = _get_sheet_id(service_sheets, spreadsheet_id, tab_name)
     score_col_i = _COL_INDEX[SCORE_COL]
-    note_col_i  = _COL_INDEX[NOTE_COL]
 
     for sheet_row, codename in sheet_entries:
         if not codename or codename not in students:
@@ -239,6 +262,34 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
             spreadsheetId=spreadsheet_id,
             body={"valueInputOption": "USER_ENTERED", "data": value_updates},
         ).execute()
+        
+        # tulis #parameter sebagai popup note di header notes
+        if parameters:
+            note_text = "\n".join(parameters)
+            note_cell = f"{NOTE_COL}{ROW_START - 1}"
+            service_sheets.spreadsheets().batchUpdate(
+                spreadsheetId=spreadsheet_id,
+                body={
+                    "requests": [{
+                        "updateCells": {
+                            "range": {
+                                "sheetId": sheet_id,
+                                "startRowIndex": ROW_START - 2,   # 0-based
+                                "endRowIndex":   ROW_START - 1,
+                                "startColumnIndex": _COL_INDEX[NOTE_COL],
+                                "endColumnIndex":   _COL_INDEX[NOTE_COL] + 1,
+                            },
+                            "rows": [{
+                                "values": [{
+                                    "note": note_text
+                                }]
+                            }],
+                            "fields": "note",
+                        }
+                    }]
+                },
+            ).execute()
+            print(f"  📌 Parameter ditulis sebagai note di {note_cell}.")
 
         # terapkan bold pada score yang berubah
         if bold_requests:
@@ -250,13 +301,21 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
             print(f"  {changed_count} nilai berubah → bold, {len(bold_requests) - changed_count} tidak berubah → unbold.")
 
         print("✅ Nilai berhasil dimasukkan ke Google Sheet.")
+        sheet_url = f"https://docs.google.com/spreadsheets/d/{spreadsheet_id}/edit?gid={sheet_id}#gid={sheet_id}"
+        print(f"🔗 {sheet_url}")
     else:
         print("⏭️  Update Sheet dilewati.")
 
     # --- 6. Update Classroom ---
-    confirm2 = input("Update ke Google Classroom? (y/n) >> ").strip().lower()
+    confirm2 = input("\nUpdate ke Google Classroom? (y/n) >> ").strip().lower()
     if confirm2 != "y":
         print("⏭️  Update Classroom dilewati.")
+        return
+
+    # hanya codename yang changed
+    changed_codenames = {t["codename"] for t in table_data if t["changed"]}
+    if not changed_codenames:
+        print("⏭️  Tidak ada nilai yang berubah, skip Classroom.")
         return
 
     service = get_service_courses()
@@ -269,13 +328,13 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
     )
 
     subs = submissions.get("studentSubmissions", [])
-    print(f"\nSubmit {len(subs)} score ke Classroom...")
+    print(f"\nSubmit {len(changed_codenames)} score yang berubah ke Classroom...")
 
     for sub in subs:
-        user_id      = sub["userId"]
+        user_id       = sub["userId"]
         submission_id = sub["id"]
 
-        student  = (
+        student = (
             service.courses()
             .students()
             .get(courseId=course_id, userId=user_id)
@@ -285,7 +344,7 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
         fullname = student["profile"]["name"]["fullName"].casefold()
 
         matched_codename = None
-        for codename in students:
+        for codename in changed_codenames:
             token = codename.split("_")[-1] if "_" in codename else codename
             if any(token in word for word in fullname.split()):
                 matched_codename = codename
@@ -295,7 +354,8 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
             continue
 
         score = students[matched_codename]["score"]
-        print(f"  Update {fullname} ({matched_codename}) → {score}")
+        prev  = next(t["prev_score"] for t in table_data if t["codename"] == matched_codename)
+        print(f"  Update {fullname} ({matched_codename}) → {score}  (sebelumnya: {prev})")
 
         service.courses().courseWork().studentSubmissions().patch(
             courseId=course_id,
@@ -304,5 +364,22 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
             updateMask="assignedGrade,draftGrade",
             body={"assignedGrade": score, "draftGrade": score},
         ).execute()
+    
+    # --- Kembalikan Nilai (return) untuk semua submission ---
+    print("\nMengembalikan nilai ke semua siswa...")
+    returned_count = 0
+    for sub in subs:
+        try:
+            service.courses().courseWork().studentSubmissions().return_(
+                courseId=course_id,
+                courseWorkId=coursework_id,
+                id=sub["id"],
+                body={},
+            ).execute()
+            returned_count += 1
+        except Exception as e:
+            print(f"  ⚠️  Gagal return submission {sub['id']}: {e}")
+
+    print(f"✅ {returned_count}/{len(subs)} nilai dikembalikan ke siswa.")
 
     print("✅ Nilai berhasil dimasukkan ke Classroom.")

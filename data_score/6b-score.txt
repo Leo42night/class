@@ -1,0 +1,189 @@
+#parameter
+- deadline 18 mar, 23:59
+- package.json root: tidak ada dependency | tidak ada [exports atau diberi workspace selain apps/ dan packages/] | tidak di dalam sub folder | terdapat script "dev".
+- folder frontend tidak kosong (hapus .git/ di apps/frontend) | terdapat apps/backend berisi proyek.
+- ada file apps/backend/prisma/db.ts yang import PrismaClient harus dari /src/generated/prisma
+- App.tsx berisi test variasi Button ShadCN (monorepo 1)
+- ApiTest.tsx koneksi Backend & shared (monorepo 1)
+- App2.tsx berisi table tampil dari database (monorepo 2)
+- package.json di frontend & backend harus ada dependency shared
+- schema.prisma: Ada konfigurasi generate client {provider, output, engineType, runtime} & model user (prisma v7^). & tidak double
+- ada file prisma.config.ts yg punya config {schema, migrations, datasoruce}
+- ada packages/shared & ada `exports` di packages/shared/package.json
+- ada HealthCheck & ApiResponse di pacakges/shared/src/index.ts
+- package.json harus ada workspaces ke apps/* dan packages/*
+- apps/frontend/package.json tidak boleh ada package dari backend (prisma)
+- apps\frontend\tsconfig.json: harus ada references path ke "./tsconfig.app.json"
+- apps\frontend\tsconfig.app.json: harus ada config baseUrl "." & path "@/*"
+- apps\backend\package.json: harus ada dependencies 'elysia', '@elysiajs/cors', '@elysiajs/swagger', '@prisma/adapter-libsql'
+- apps/backend/src/index.ts: ada import Elysia, cors, swagger, type {ApiResponse, HealthCheck User}. route get "/" harus cuma 1
+- package/shared/src/index.ts: interface user.name harus bertipe `string | null`
+- `bun install & bun dev` di apps/backend run lancar (after set `dotenv` package .env DATABASE_URL="file:./dev.db", prisma generate, prisma seed)
+- `bun install && bun dev` di apps/frontend run lancar (after add kill-port 5173 in script dev).
+- library frontend vite+react-ts+tailwind 4+ShadCN terinstall di apps/frontend package.json
+
+> gabriela
+-100 Tidak mengumpulkan tugas
+> rola
+-30 telat 1 hari
+-5 App.tsx harusnya berisi test variasi Button dari ShadCN
+-15 ApiTest.tsx: kode error belum lengkap, harusnya berisi koneksi Backend & shared
+
+> adella
+> athallah
+> atikoh
+-10 kenapa ada workspace path backend di root package.json? (harusnya apps/* cukup)
+-5 package.json root harusnya tidak ada dependency
+-10 schema.prisma: runtime = "bun", engineType, & output ke `/src/generated` tidak ada
+-10 prisma.config.ts: Tidak ada "schema","migrations". cuma ada "datasource"
+-5 db.ts: PrismaClient tidak dari ../src/generated/prisma
+
+> audy
+-50 File apps\frontend kosong (.git/ lupa dihapus)
+-15 schema.prisma: generator client tidak boleh double
+-5 db.ts: PrismaClient tidak dari ../src/generated/prisma
+-10 apps/backend/src/index.ts: tidak ada import Elysia, cors, swagger
+-10 package/shared/src/index.ts: interface user.name tipe bukan `string`, tapi `string | null`
+
+> christian
+-10 apps/frontend/src/App2.tsx ya, bukan apps/frontend/App2.tsx 
+-10 schema.prisma: runtime = "bun", engineType tidak Ada
+-25 Folder packages/shared tidak ada
+
+> fahdil
+> irene
+> jesika
+-5 App.tsx harusnya berisi test variasi Button dari ShadCN
+-10 ApiTest.tsx harusnya berisi koneksi Backend & shared
+> kayla
+-5 package.json root harusnya tidak ada dependency
+> lubna
+-10 schema.prisma: runtime = "bun", engineType, & output ke `/src/generated` tidak ada
+-10 schema.prisma: `url` is no longer supported in schema.prisma (pakai prisma v7^ ya)
+-5 File prisma.config.ts tidak ada di: "apps\backend" (pakai prisma v7^ ya)
+-10 db.ts: PrismaClient tidak dari ../src/generated/prisma. tidak ada PrismaLibSql
+-10 apps\frontend\tsconfig.json: tidak ada references path ke "./tsconfig.app.json"
+-10 apps\backend\package.json: tidak ada dependencies "@prisma/adapter-libsql"
+
+> m1_fadjri
+-5 package.json root harusnya tidak ada dependency
+-10 apps\frontend\tsconfig.json: tidak ada references path ke "./tsconfig.app.json"
+-10 apps\frontend\tsconfig.app.json: tidak ada config baseUrl "." & path "@/*"
+
+> m2_jihan
+-40 tidak ada folder: "apps\frontend", "apps\backend" (cuma proyek frontend di root)
+-25 Folder packages/shared tidak ada
+-10 frontend tsconfig.json: tidak ada references path ke "./tsconfig.app.json"
+-10 apps\frontend\tsconfig.app.json: tidak ada config baseUrl "." & path "@/*"
+
+> m3_rasyid
+-40 tidak ada folder: "apps\frontend", "apps\backend" (cuma proyek frontend di root)
+-25 Folder packages/shared tidak ada
+
+> nabil_fauzan
+-10 schema.prisma: output ke `/src/generated` tidak ada
+-10 schema.prisma: `url` is no longer supported in schema.prisma (pakai prisma v7^ ya)
+-10 prisma.config.ts: Tidak ada "schema","migrations","datasource"
+-10 db.ts: PrismaClient tidak dari ../src/generated/prisma. tidak ada PrismaLibSql
+
+> nabila
+> nadya
+-10 kenapa ada exports di root package.json?
+-5 Tidak ada "exports" di: "packages/shared/package.json"
+-10 apps\frontend\tsconfig.json: tidak ada references path ke "./tsconfig.app.json"
+-10 apps\frontend\tsconfig.app.json: tidak ada config baseUrl "." & path "@/*"
+
+> nayla
+-5 apps/backend/package.json: tidak ada dependencies "shared"
+
+> olivia
+-5 not ideal structure: proyek dalam subfolder
+-10 schema.prisma: output ke `/src/generated` tidak ada
+
+> prilia
+-5 package.json root harusnya tidak ada dependency
+-50 File apps\frontend kosong (.git/ lupa dihapus)
+-10 schema.prisma: output ke `/src/generated` tidak ada
+-10 prisma.config.ts: Tidak ada "migrations"
+-10 packages/shared/src/index.ts, bukan packages/shared/index.ts
+-5 db.ts: PrismaClient tidak dari ../src/generated/prisma
+
+> raden
+
+> rafli
+> rifa_dwi
+-10 apps\frontend\src\App2.tsx ya, bukan packages\frontend\src\App2.tsx
+-10 schema.prisma: runtime = "bun" & engineType tidak ada
+
+> rito
+-50 File apps\frontend kosong (.git/ lupa dihapus)
+
+> salsabila
+-50 File apps\frontend kosong (.git/ lupa dihapus)
+-10 schema.prisma: output ke `/src/generated` tidak ada
+-10 packages/shared/src/index.ts, bukan packages/shared/index.ts
+-5 db.ts: PrismaClient tidak dari ../src/generated/prisma
+-10 apps\backend\package.json: tidak ada dependencies 'elysia', '@elysiajs/cors', '@elysiajs/swagger'
+
+> saskia
+-10 apps\backend\package.json: tidak ada dependencies 'elysia', '@elysiajs/cors', '@elysiajs/swagger'
+-10 apps\frontend\tsconfig.app.json: tidak ada config baseUrl "." & path "@/*"
+
+> radika
+-40 tidak ada folder: "apps\backend" (cuma proyek frontend di apps/)
+-5 not ideal structure: proyek dalam subfolder
+-5 tidak ada script "dev" di root package.json
+-5 App.tsx harusnya berisi test variasi Button dari ShadCN
+-10 tidak ada App2.tsx yg berisi table tampil dari database
+-10 tidak ada ApiTest.tsx yg berisi koneksi Backend & shared
+-25 Folder packages/shared tidak ada
+
+> shalwa
+-5 not ideal structure: proyek dalam subfolder, apps/backend/src/index.ts, bukan apps/backend/index.ts
+-5 tidak ada script "dev" di root package.json
+-10 apps/backend/prisma/: File db.ts tidak ada
+-5 apps/backend/package.json: tidak ada dependencies "shared", tidak ada script dev
+-5 apps/frontend/package.json: tidak ada dependencies "shared"
+-5 App.tsx harusnya berisi test variasi Button dari ShadCN
+-10 tidak ada App2.tsx yg berisi table tampil dari database
+-10 tidak ada ApiTest.tsx yg berisi koneksi Backend & shared
+-10 schema.prisma: runtime = "bun", engineType, & output ke `/src/generated` tidak ada. `url` is no longer supported in schema.prisma (pakai prisma v7^ ya)
+-5 File prisma.config.ts tidak ada di: "apps\backend" (pakai prisma v7^ ya)
+-5 Tidak ada "exports" di: "packages/shared/package.json"
+-10 packages/shared/src/index.ts: bukan packages/shared/index.ts, tidak ada ApiResponse & HealthCheck
+-5 backend index.ts: tidak boleh inisiasi Database, buat table User nya di schema.prisma
+-10 apps\frontend\tsconfig.app.json: tidak ada config baseUrl "." & path "@/*"
+
+> syafira
+-40 tidak ada folder: "apps\frontend", "apps\backend" (cuma proyek frontend di root)
+-25 Folder packages/shared tidak ada
+-5 App.tsx harusnya berisi test variasi Button dari ShadCN
+-30 telat 1 hari
+
+> syarifah
+-5 package.json root harusnya tidak ada dependency
+-5 db.ts: PrismaClient tidak dari ../src/generated/prisma
+-10 apps\frontend\tsconfig.json: tidak ada references path ke "./tsconfig.app.json"
+-10 apps\frontend\tsconfig.app.json: tidak ada config baseUrl "." & path "@/*"
+-10 apps\backend\index.ts: route get "/" lebih dari 1
+
+> tan
+-5 App.tsx harusnya berisi test variasi Button dari ShadCN
+-10 tidak ada ApiTest.tsx yg berisi koneksi Backend & shared
+-10 schema.prisma: runtime = "bun", engineType, & output ke `/src/generated` tidak ada
+-10 prisma.config.ts: Tidak ada "migrations","datasource". cuma ada "schema"
+-5 db.ts: PrismaClient tidak dari ../src/generated/prisma
+
+> timothy
+> viona
+-5 package.json root harusnya tidak ada dependency
+> virsya
+-5 package.json root harusnya tidak ada dependency
+-10 apps\backend\src\index.ts: tidak ada import user from shared
+-10 apps\backend\package.json: tidak ada dependencies 'elysia', '@elysiajs/cors', '@elysiajs/swagger'
+-10 apps\frontend\tsconfig.json: tidak ada references path ke "./tsconfig.app.json"
+
+> zulfikarnaen
+-40 tidak ada folder: "apps\frontend" (cuma proyek backend di apps/ & package shared)
+-5 backend package.json: tidak ada dependencies "shared"
+-5 package.json root harusnya tidak ada dependency

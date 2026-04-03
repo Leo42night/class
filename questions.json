@@ -1,0 +1,1690 @@
+[
+  {
+    "type": 1,
+    "category": 1,
+    "language": 3,
+    "question": "Command untuk **menginstall semua dependency** dari `package.json` menggunakan Bun adalah?",
+    "answer": [
+      "bun install",
+      "bun add",
+      "bun get",
+      "bun fetch"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 1,
+    "language": 1,
+    "question": "Cara membaca file secara **synchronous** menggunakan Bun API adalah?",
+    "answer": [
+      "Bun.file(path).text()",
+      "fs.readFileSync(path)",
+      "Bun.readSync(path)",
+      "Bun.open(path)"
+    ],
+    "correct_answer": 0,
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 1,
+    "category": 2,
+    "language": 4,
+    "question": "Class TailwindCSS untuk membuat teks berukuran **extra large** adalah?",
+    "answer": [
+      "text-xl",
+      "text-large",
+      "font-xl",
+      "size-xl"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 2,
+    "language": 2,
+    "question": "Manakah class TailwindCSS yang digunakan untuk **flexbox** dengan arah **column**?",
+    "answer": [
+      "flex flex-col",
+      "flex column",
+      "flexbox-col",
+      "flex-direction-col"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 3,
+    "language": 3,
+    "question": "Perintah untuk **melihat log commit** secara ringkas satu baris adalah?",
+    "answer": [
+      "git log --oneline",
+      "git log --short",
+      "git show --brief",
+      "git history"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 3,
+    "language": 3,
+    "question": "Perintah untuk **membuat branch baru** sekaligus langsung berpindah ke branch tersebut adalah?",
+    "answer": [
+      "git checkout -b nama-branch",
+      "git branch -new nama-branch",
+      "git switch --create nama-branch",
+      "git branch nama-branch && git checkout"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 4,
+    "language": 1,
+    "question": "Method ElysiaJS untuk mendaftarkan **route GET** adalah?",
+    "answer": [
+      ".get(path, handler)",
+      ".route(GET, path)",
+      ".addGet(path, handler)",
+      ".on(GET, path)"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 4,
+    "language": 1,
+    "question": "Untuk **menjalankan server** ElysiaJS pada port tertentu, method yang digunakan adalah?",
+    "answer": [
+      ".listen(port)",
+      ".start(port)",
+      ".run(port)",
+      ".serve(port)"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 2,
+    "language": 4,
+    "question": "Class TailwindCSS untuk membuat elemen **tersembunyi** (tidak tampil) adalah?",
+    "answer": [
+      "hidden",
+      "invisible",
+      "display-none",
+      "no-show"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 1,
+    "language": 3,
+    "question": "Command Bun untuk **menjalankan test** pada project adalah?",
+    "answer": [
+      "bun test",
+      "bun run test",
+      "bun check",
+      "bun spec"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 2,
+    "category": 1,
+    "language": 3,
+    "question": "Manakah yang merupakan **fitur unggulan Bun** dibandingkan Node.js?",
+    "answer": [
+      "Built-in bundler",
+      "Lebih cepat saat startup",
+      "Built-in test runner",
+      "Memerlukan npm untuk package"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 2,
+    "category": 2,
+    "language": 4,
+    "question": "Class TailwindCSS manakah yang termasuk dalam kategori **spacing (padding/margin)**?",
+    "answer": [
+      "p-4",
+      "m-2",
+      "px-6",
+      "text-lg"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 2,
+    "category": 3,
+    "language": 3,
+    "question": "Perintah Git mana yang digunakan dalam alur kerja **membuat dan mempublish branch baru**?",
+    "answer": [
+      "git checkout -b feature",
+      "git push -u origin feature",
+      "git merge feature",
+      "git clone"
+    ],
+    "correct_answer": [
+      0,
+      1
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 2,
+    "category": 4,
+    "language": 1,
+    "question": "Plugin/fitur apa saja yang **tersedia secara built-in** di ElysiaJS?",
+    "answer": [
+      "Bearer Auth",
+      "Swagger dokumentasi",
+      "Static file serving",
+      "Database ORM"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 2,
+    "category": 2,
+    "language": 2,
+    "question": "Manakah class TailwindCSS yang digunakan untuk mengatur **border**?",
+    "answer": [
+      "border",
+      "border-2",
+      "rounded-lg",
+      "outline"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 2,
+    "category": 3,
+    "language": 3,
+    "question": "Perintah mana yang bisa digunakan untuk **membatalkan/mengundo perubahan** di Git?",
+    "answer": [
+      "git revert HEAD",
+      "git reset --hard HEAD~1",
+      "git checkout -- file.txt",
+      "git push --delete"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 2,
+    "category": 1,
+    "language": 1,
+    "question": "API built-in Bun yang **tidak ada di Node.js** adalah?",
+    "answer": [
+      "Bun.serve()",
+      "Bun.file()",
+      "Bun.password.hash()",
+      "require()"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 2,
+    "category": 2,
+    "language": 4,
+    "question": "Manakah class TailwindCSS untuk **responsive breakpoint** yang valid?",
+    "answer": [
+      "sm:text-lg",
+      "md:flex",
+      "lg:hidden",
+      "ultra:block"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 2,
+    "category": 4,
+    "language": 1,
+    "question": "Manakah cara yang valid untuk **validasi input** di ElysiaJS menggunakan Elysia type system (t)?",
+    "answer": [
+      "t.String()",
+      "t.Number()",
+      "t.Object({})",
+      "t.Validate()"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 3,
+    "points": 3
+  },
+  {
+    "type": 2,
+    "category": 3,
+    "language": 3,
+    "question": "Manakah perintah yang **menampilkan informasi** tentang remote repository?",
+    "answer": [
+      "git remote -v",
+      "git remote show origin",
+      "git fetch --dry-run",
+      "git push --list"
+    ],
+    "correct_answer": [
+      0,
+      1
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 1,
+    "language": 1,
+    "question": "Lengkapi kode berikut untuk **membaca isi file** menggunakan Bun:\n```js\nconst file = Bun.file(\"data.txt\");\nconst content = await file.<<4>>();\nconsole.log(content);\n```",
+    "answer": "const file = Bun.file(\"data.txt\");\nconst content = await file.<<4>>();\nconsole.log(content);",
+    "correct_answer": [
+      "text"
+    ],
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 3,
+    "category": 4,
+    "language": 1,
+    "question": "Lengkapi kode untuk membuat **server ElysiaJS** berjalan di port 3000:\n```js\nimport { Elysia } from \"elysia\";\nconst app = new <<6>>();\napp.<<6>>(3000);\n```",
+    "answer": "import { Elysia } from \"elysia\";\nconst app = new <<6>>();\napp.<<6>>(3000);",
+    "correct_answer": [
+      "Elysia",
+      "listen"
+    ],
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 3,
+    "category": 3,
+    "language": 3,
+    "question": "Lengkapi perintah untuk **commit dengan pesan** di Git:\n```bash\ngit <<6>> -m \"initial commit\"\n```",
+    "answer": "git <<6>> -m \"initial commit\"",
+    "correct_answer": [
+      "commit"
+    ],
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 3,
+    "category": 2,
+    "language": 4,
+    "question": "Lengkapi class TailwindCSS agar tombol memiliki **background biru** dan **teks putih**:\n```html\n<button class=\"<<6>> <<10>> px-4 py-2\">\n  Submit\n</button>\n```",
+    "answer": "<button class=\"<<6>> <<10>> px-4 py-2\">\n\tSubmit\n</button>",
+    "correct_answer": [
+      "bg-blue-500",
+      "text-white"
+    ],
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 3,
+    "category": 1,
+    "language": 1,
+    "question": "Lengkapi kode untuk **menulis file** menggunakan Bun:\n```js\nawait Bun.<<5>>(\"output.txt\", \"Hello Bun!\");\n```",
+    "answer": "await Bun.<<5>>(\"output.txt\", \"Hello Bun!\");",
+    "correct_answer": [
+      "write"
+    ],
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 3,
+    "category": 4,
+    "language": 1,
+    "question": "Lengkapi kode ElysiaJS agar route POST `/login` **mengambil body** dari request:\n```js\napp.post(\"/login\", ({ <<4>> }) => {\n  const { username, password } = body;\n  return { username };\n});\n```",
+    "answer": "app.post(\"/login\", ({ <<4>> }) => {\n\tconst { username, password } = body;\n\treturn { username };\n});",
+    "correct_answer": [
+      "body"
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 3,
+    "language": 3,
+    "question": "Lengkapi perintah untuk **menghubungkan repo lokal** ke remote GitHub:\n```bash\ngit remote <<3>> origin https://github.com/user/repo.git\n```",
+    "answer": "git remote <<3>> origin https://github.com/user/repo.git",
+    "correct_answer": [
+      "add"
+    ],
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 3,
+    "category": 2,
+    "language": 4,
+    "question": "Lengkapi kode untuk membuat **card** dengan shadow dan rounded corner:\n```html\n<div class=\"<<10>> <<9>> p-6 bg-white\">\n  Card Content\n</div>\n```",
+    "answer": "<div class=\"<<10>> <<9>> p-6 bg-white\">\n\tCard Content\n</div>",
+    "correct_answer": [
+      "rounded-lg",
+      "shadow-md"
+    ],
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 3,
+    "category": 1,
+    "language": 1,
+    "question": "Lengkapi kode untuk menjalankan **HTTP server** sederhana dengan Bun:\n```js\nBun.<<5>>({\n  <<4>>: 8080,\n  fetch(req) {\n    return new Response(\"OK\");\n  }\n});\n```",
+    "answer": "Bun.<<5>>({\n\t<<4>>: 8080,\n\tfetch(req) {\n\t\treturn new Response(\"OK\");\n\t}\n});",
+    "correct_answer": [
+      "serve",
+      "port"
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 4,
+    "language": 1,
+    "question": "Lengkapi kode ElysiaJS untuk menambahkan **middleware** yang berjalan sebelum semua route:\n```js\napp\n  .<<9>>(({ request, set }) => {\n    console.log(request.method, request.url);\n  })\n  .get(\"/\", () => \"Hello\");\n```",
+    "answer": "app\n\t.<<9>>(({ request, set }) => {\n\t\tconsole.log(request.method, request.url);\n\t})\n\t.get(\"/\", () => \"Hello\");",
+    "correct_answer": [
+      "onRequest"
+    ],
+    "difficulty": 3,
+    "points": 3
+  },
+  {
+    "type": 4,
+    "category": 1,
+    "language": 1,
+    "question": "Lengkapi kode agar **mencetak output** ke terminal. Jawaban bisa menggunakan `console.log` atau `console.info`:\n```js\nfunction greet(name) {\n  <<18>>(`Hello, ${name}!`);\n}\n```",
+    "answer": "function greet(name) {\n\t<<18>>(`Hello, ${name}!`);\n}",
+    "correct_answer": "console\\.(log|info)",
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 4,
+    "category": 3,
+    "language": 3,
+    "question": "Lengkapi perintah untuk **menambahkan file** ke staging area. Jawaban bisa `git add .` atau `git add -A`:\n```bash\n<<12>> untuk staging semua perubahan\n```",
+    "answer": "<<12>> untuk staging semua perubahan",
+    "correct_answer": "git add (\\.|\\-A|--all)",
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 4,
+    "category": 2,
+    "language": 4,
+    "question": "Lengkapi class untuk membuat teks **tebal (bold)**. Bisa menggunakan `font-bold` atau `font-semibold`:\n```html\n<p class=\"<<14>> text-gray-800\">Judul Penting</p>\n```",
+    "answer": "<p class=\"<<14>> text-gray-800\">Judul Penting</p>",
+    "correct_answer": "font-(bold|semibold|extrabold|black)",
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 4,
+    "category": 4,
+    "language": 1,
+    "question": "Lengkapi kode untuk **mengembalikan response JSON** di ElysiaJS. Jawaban bisa return object langsung atau menggunakan `Response`:\n```js\napp.get(\"/user\", () => {\n  <<20>>({ id: 1, name: \"Budi\" });\n});\n```",
+    "answer": "app.get(\"/user\", () => {\n\t<<20>>({ id: 1, name: \"Budi\" });\n});",
+    "correct_answer": "return( new Response\\(JSON\\.stringify\\()?",
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 4,
+    "category": 1,
+    "language": 1,
+    "question": "Lengkapi kode untuk **hash password** menggunakan Bun built-in. Bisa menggunakan `bcrypt` atau `argon2id`:\n```js\nconst hash = await Bun.password.<<14>>(\"secret123\");\n```",
+    "answer": "const hash = await Bun.password.<<14>>(\"secret123\");",
+    "correct_answer": "hash(With)?(Bcrypt|Argon2)?|hash",
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 4,
+    "category": 3,
+    "language": 3,
+    "question": "Lengkapi perintah untuk **melihat perbedaan** perubahan file. Bisa menggunakan `git diff` atau `git diff --staged`:\n```bash\n<<20>> untuk melihat perubahan sebelum commit\n```",
+    "answer": "<<20>> untuk melihat perubahan sebelum commit",
+    "correct_answer": "git diff( --staged| --cached)?",
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 4,
+    "category": 2,
+    "language": 2,
+    "question": "Lengkapi class untuk mengatur **warna background** menjadi merah. Jawaban bisa `bg-red-500`, `bg-red-400`, atau `bg-red-600`:\n```html\n<div class=\"<<14>> text-white p-4\">Alert!</div>\n```",
+    "answer": "<div class=\"<<14>> text-white p-4\">Alert!</div>",
+    "correct_answer": "bg-red-(3|4|5|6|7)[0-9]{2}",
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 4,
+    "category": 4,
+    "language": 1,
+    "question": "Lengkapi kode untuk **validasi body** menggunakan Elysia type. Tipe string bisa ditulis `t.String()` atau `t.string()`:\n```js\napp.post(\"/register\", ({ body }) => body, {\n  body: t.Object({\n    username: <<12>>,\n    age: t.Number()\n  })\n});\n```",
+    "answer": "app.post(\"/register\", ({ body }) => body, {\n\tbody: t.Object({\n\t\tusername: <<12>>,\n\t\tage: t.Number()\n\t})\n});",
+    "correct_answer": "t\\.(S|s)tring\\(\\)",
+    "difficulty": 3,
+    "points": 3
+  },
+  {
+    "type": 4,
+    "category": 1,
+    "language": 1,
+    "question": "Lengkapi kode untuk **menjalankan shell command** menggunakan Bun Shell. Bisa `$` atau `Bun.$`:\n```js\nconst result = await <<6>>`ls -la`;\nconsole.log(result.stdout.toString());\n```",
+    "answer": "const result = await <<6>>`ls -la`;\nconsole.log(result.stdout.toString());",
+    "correct_answer": "(Bun\\.)?\\$",
+    "difficulty": 3,
+    "points": 3
+  },
+  {
+    "type": 4,
+    "category": 3,
+    "language": 3,
+    "question": "Lengkapi perintah untuk **rebase interaktif** pada 3 commit terakhir. Format bisa `HEAD~3` atau `HEAD~3 -i`:\n```bash\ngit rebase <<14>>\n```",
+    "answer": "git rebase <<14>>",
+    "correct_answer": "-i HEAD~[0-9]+|HEAD~[0-9]+ -i",
+    "difficulty": 3,
+    "points": 3
+  },
+  {
+    "type": 1,
+    "category": 4,
+    "language": 1,
+    "question": "Cara mengambil **path parameter** dari URL `/user/:id` di ElysiaJS adalah?",
+    "answer": [
+      "({ params }) => params.id",
+      "({ url }) => url.id",
+      "({ path }) => path.id",
+      "({ req }) => req.params.id"
+    ],
+    "correct_answer": 0,
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 1,
+    "category": 2,
+    "language": 4,
+    "question": "Class TailwindCSS untuk membuat **grid 3 kolom** adalah?",
+    "answer": [
+      "grid grid-cols-3",
+      "flex cols-3",
+      "grid columns-3",
+      "layout-3"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 3,
+    "language": 3,
+    "question": "Perintah untuk **menyimpan perubahan sementara** tanpa melakukan commit adalah?",
+    "answer": [
+      "git stash",
+      "git save",
+      "git temp",
+      "git pause"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 1,
+    "language": 3,
+    "question": "Perintah untuk **menambahkan package** baru menggunakan Bun adalah?",
+    "answer": [
+      "bun add <package>",
+      "bun install <package>",
+      "bun get <package>",
+      "bun require <package>"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 4,
+    "language": 1,
+    "question": "Plugin ElysiaJS untuk mengaktifkan **dokumentasi Swagger** adalah?",
+    "answer": [
+      "swagger()",
+      "openapi()",
+      "docs()",
+      "apiDoc()"
+    ],
+    "correct_answer": 0,
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 1,
+    "category": 2,
+    "language": 2,
+    "question": "Class TailwindCSS untuk mengatur **posisi elemen menjadi absolute** adalah?",
+    "answer": [
+      "absolute",
+      "position-absolute",
+      "pos-abs",
+      "abs"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 3,
+    "language": 3,
+    "question": "Perintah untuk **menggabungkan branch** `feature` ke branch saat ini adalah?",
+    "answer": [
+      "git merge feature",
+      "git join feature",
+      "git pull feature",
+      "git combine feature"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 1,
+    "language": 1,
+    "question": "Cara mengecek **versi Bun** yang terinstall via terminal adalah?",
+    "answer": [
+      "bun --version",
+      "bun -v",
+      "bun version",
+      "bun info"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 2,
+    "language": 4,
+    "question": "Class TailwindCSS untuk **memusatkan konten** secara horizontal dan vertikal dengan flexbox adalah?",
+    "answer": [
+      "flex items-center justify-center",
+      "flex center",
+      "flexbox-center",
+      "flex align-center"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 4,
+    "language": 1,
+    "question": "Cara menangani **error global** di ElysiaJS menggunakan lifecycle hook adalah?",
+    "answer": [
+      ".onError(({ error }) => {})",
+      ".catch(error => {})",
+      ".error(handler)",
+      ".handleError(fn)"
+    ],
+    "correct_answer": 0,
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 2,
+    "category": 3,
+    "language": 3,
+    "question": "Manakah perintah yang termasuk dalam alur kerja **Git stash**?",
+    "answer": [
+      "git stash push",
+      "git stash pop",
+      "git stash list",
+      "git stash commit"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 2,
+    "category": 2,
+    "language": 4,
+    "question": "Manakah class TailwindCSS yang valid untuk mengatur **ukuran teks**?",
+    "answer": [
+      "text-sm",
+      "text-2xl",
+      "text-base",
+      "text-100"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 2,
+    "category": 1,
+    "language": 3,
+    "question": "Manakah **script runner** yang valid menggunakan Bun?",
+    "answer": [
+      "bun run dev",
+      "bun dev",
+      "bun run build",
+      "bun execute dev"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 2,
+    "category": 4,
+    "language": 1,
+    "question": "Manakah **lifecycle hooks** yang tersedia di ElysiaJS?",
+    "answer": [
+      "onRequest",
+      "onBeforeHandle",
+      "onAfterHandle",
+      "onInit"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 3,
+    "points": 3
+  },
+  {
+    "type": 2,
+    "category": 3,
+    "language": 3,
+    "question": "Manakah flag yang valid untuk perintah **`git commit`**?",
+    "answer": [
+      "-m \"pesan\"",
+      "--amend",
+      "-a",
+      "--squash"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 2,
+    "category": 2,
+    "language": 2,
+    "question": "Manakah class TailwindCSS yang digunakan untuk **animasi dan transisi**?",
+    "answer": [
+      "transition",
+      "duration-300",
+      "animate-spin",
+      "move-slow"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 2,
+    "category": 1,
+    "language": 1,
+    "question": "Manakah yang merupakan **format import** yang didukung Bun secara native?",
+    "answer": [
+      "import x from \"module\"",
+      "require(\"module\")",
+      "import x from \"./file.ts\"",
+      "import x from \"npm:module\""
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 2,
+    "category": 4,
+    "language": 1,
+    "question": "Manakah **HTTP method** yang didukung sebagai method handler di ElysiaJS?",
+    "answer": [
+      ".post()",
+      ".put()",
+      ".delete()",
+      ".connect()"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 2,
+    "category": 2,
+    "language": 4,
+    "question": "Manakah class TailwindCSS yang valid untuk mengatur **overflow**?",
+    "answer": [
+      "overflow-hidden",
+      "overflow-auto",
+      "overflow-scroll",
+      "overflow-clip-x"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 2,
+    "category": 3,
+    "language": 3,
+    "question": "Manakah perintah yang digunakan untuk **menginspeksi commit tertentu** di Git?",
+    "answer": [
+      "git show <hash>",
+      "git log --stat",
+      "git diff HEAD~1",
+      "git status --verbose"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 3,
+    "language": 3,
+    "question": "Lengkapi perintah untuk **menyimpan stash** dengan nama tertentu:\n```bash\ngit stash <<4>> -m \"wip: login page\"\n```",
+    "answer": "git stash <<4>> -m \"wip: login page\"",
+    "correct_answer": [
+      "push"
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 4,
+    "language": 1,
+    "question": "Lengkapi kode untuk membaca **query parameter** `?page=1` di ElysiaJS:\n```js\napp.get(\"/posts\", ({ <<5>> }) => {\n  return `Page: ${query.page}`;\n});\n```",
+    "answer": "app.get(\"/posts\", ({ <<5>> }) => {\n\treturn `Page: ${query.page}`;\n});",
+    "correct_answer": [
+      "query"
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 2,
+    "language": 4,
+    "question": "Lengkapi class untuk membuat **hover effect** mengubah warna background menjadi biru gelap:\n```html\n<button class=\"bg-blue-500 <<22>> px-4 py-2 text-white\">\n  Hover Me\n</button>\n```",
+    "answer": "<button class=\"bg-blue-500 <<22>> px-4 py-2 text-white\">\n\tHover Me\n</button>",
+    "correct_answer": [
+      "hover:bg-blue-700"
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 1,
+    "language": 1,
+    "question": "Lengkapi kode untuk **memverifikasi password** menggunakan Bun built-in:\n```js\nconst isValid = await Bun.password.<<6>>(plain, hash);\n```",
+    "answer": "const isValid = await Bun.password.<<6>>(plain, hash);",
+    "correct_answer": [
+      "verify"
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 3,
+    "language": 3,
+    "question": "Lengkapi perintah untuk **menghapus branch lokal** yang sudah di-merge:\n```bash\ngit branch <<2>> nama-branch\n```",
+    "answer": "git branch <<2>> nama-branch",
+    "correct_answer": [
+      "-d"
+    ],
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 3,
+    "category": 4,
+    "language": 1,
+    "question": "Lengkapi kode untuk **mengelompokkan route** dengan prefix `/api` menggunakan ElysiaJS:\n```js\napp.<<5>>(\"/api\", app =>\n  app.get(\"/users\", () => [])\n);\n```",
+    "answer": "app.<<5>>(\"/api\", app =>\n\tapp.get(\"/users\", () => [])\n);",
+    "correct_answer": [
+      "group"
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 2,
+    "language": 2,
+    "question": "Lengkapi class untuk membuat elemen dengan **lebar penuh** dan **tinggi layar penuh**:\n```html\n<div class=\"<<7>> <<8>>\">\n  Full Screen\n</div>\n```",
+    "answer": "<div class=\"<<7>> <<8>>\">\n\tFull Screen\n</div>",
+    "correct_answer": [
+      "w-full",
+      "h-screen"
+    ],
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 3,
+    "category": 1,
+    "language": 1,
+    "question": "Lengkapi kode untuk **mengecek apakah file ada** menggunakan Bun:\n```js\nconst file = Bun.file(\"config.json\");\nconst exists = await file.<<6>>();\n```",
+    "answer": "const file = Bun.file(\"config.json\");\nconst exists = await file.<<6>>();",
+    "correct_answer": [
+      "exists"
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 4,
+    "language": 1,
+    "question": "Lengkapi kode untuk **menyetel HTTP status code** 201 pada response ElysiaJS:\n```js\napp.post(\"/create\", ({ <<3>> }) => {\n  set.status = 201;\n  return { message: \"Created\" };\n});\n```",
+    "answer": "app.post(\"/create\", ({ <<3>> }) => {\n\tset.status = 201;\n\treturn { message: \"Created\" };\n});",
+    "correct_answer": [
+      "set"
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 3,
+    "language": 3,
+    "question": "Lengkapi perintah untuk **mengkloning repository** dengan hanya 1 commit terakhir (shallow clone):\n```bash\ngit clone --<<5>> 1 https://github.com/user/repo.git\n```",
+    "answer": "git clone --<<5>> 1 https://github.com/user/repo.git",
+    "correct_answer": [
+      "depth"
+    ],
+    "difficulty": 3,
+    "points": 3
+  },
+  {
+    "type": 4,
+    "category": 2,
+    "language": 4,
+    "question": "Lengkapi class untuk mengatur **gap antar elemen grid**. Bisa menggunakan `gap-4`, `gap-6`, atau `gap-8`:\n```html\n<div class=\"grid grid-cols-3 <<6>>\">\n  ...\n</div>\n```",
+    "answer": "<div class=\"grid grid-cols-3 <<6>>\">\n\t...\n</div>",
+    "correct_answer": "gap-[0-9]+",
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 4,
+    "category": 1,
+    "language": 1,
+    "question": "Lengkapi kode untuk **mengurai JSON** dari string. Bisa menggunakan `JSON.parse` atau `Response.json`:\n```js\nconst data = <<12>>(jsonString);\nconsole.log(data.name);\n```",
+    "answer": "const data = <<12>>(jsonString);\nconsole.log(data.name);",
+    "correct_answer": "JSON\\.parse",
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 4,
+    "category": 3,
+    "language": 3,
+    "question": "Lengkapi perintah untuk **menghapus branch remote**. Bisa menggunakan `--delete` atau `-d`:\n```bash\ngit push origin <<18>> nama-branch\n```",
+    "answer": "git push origin <<18>> nama-branch",
+    "correct_answer": "(--delete|-d)",
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 4,
+    "category": 4,
+    "language": 1,
+    "question": "Lengkapi kode untuk mengatur **CORS** di ElysiaJS menggunakan plugin. Nama fungsinya bisa `cors()` atau `staticPlugin()`:\n```js\nimport { cors } from \"@elysiajs/<<4>>\";\napp.use(<<4>>());\n```",
+    "answer": "import { cors } from \"@elysiajs/<<4>>\";\napp.use(<<4>>());",
+    "correct_answer": "cors",
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 4,
+    "category": 2,
+    "language": 2,
+    "question": "Lengkapi class untuk mengatur **opacity** elemen. Bisa `opacity-50`, `opacity-75`, atau `opacity-100`:\n```html\n<div class=\"bg-black <<12>> text-white p-4\">Overlay</div>\n```",
+    "answer": "<div class=\"bg-black <<12>> text-white p-4\">Overlay</div>",
+    "correct_answer": "opacity-[0-9]{2,3}",
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 4,
+    "category": 1,
+    "language": 1,
+    "question": "Lengkapi kode untuk **mengonversi file ke ArrayBuffer** dengan Bun. Bisa `arrayBuffer()` atau `bytes()`:\n```js\nconst buf = await Bun.file(\"img.png\").<<14>>();\n```",
+    "answer": "const buf = await Bun.file(\"img.png\").<<14>>();",
+    "correct_answer": "(arrayBuffer|bytes)\\(\\)",
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 4,
+    "category": 3,
+    "language": 3,
+    "question": "Lengkapi perintah untuk **mencari teks** dalam seluruh history commit. Bisa menggunakan `-S` (pickaxe) atau `-G` (regex):\n```bash\ngit log <<12>> \"password\"\n```",
+    "answer": "git log <<12>> \"password\"",
+    "correct_answer": "(-S|-G)",
+    "difficulty": 3,
+    "points": 3
+  },
+  {
+    "type": 4,
+    "category": 4,
+    "language": 1,
+    "question": "Lengkapi tipe validasi untuk field **array of string** di Elysia. Bisa `t.Array(t.String())` atau `t.Array(t.String({}))`:\n```js\nbody: t.Object({\n  tags: <<24>>\n})\n```",
+    "answer": "body: t.Object({\n\ttags: <<24>>\n})",
+    "correct_answer": "t\\.Array\\(t\\.(S|s)tring\\(.*\\)\\)",
+    "difficulty": 3,
+    "points": 3
+  },
+  {
+    "type": 4,
+    "category": 2,
+    "language": 4,
+    "question": "Lengkapi class untuk **dark mode** teks putih. Bisa menggunakan `dark:text-white` atau `dark:text-gray-100`:\n```html\n<p class=\"text-gray-900 <<20>>\">Teks ini adaptif</p>\n```",
+    "answer": "<p class=\"text-gray-900 <<20>>\">Teks ini adaptif</p>",
+    "correct_answer": "dark:text-(white|gray-[0-9]{2,3})",
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 4,
+    "category": 1,
+    "language": 1,
+    "question": "Lengkapi kode untuk **mengimpor environment variable** di Bun. Bisa `process.env.KEY` atau `Bun.env.KEY`:\n```js\nconst secret = <<20>>;\nconsole.log(secret);\n```",
+    "answer": "const secret = <<20>>;\nconsole.log(secret);",
+    "correct_answer": "(process\\.env|Bun\\.env)\\.[A-Z_]+",
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 1,
+    "category": 3,
+    "language": 3,
+    "question": "Perintah untuk **melihat daftar semua branch** (lokal dan remote) adalah?",
+    "answer": [
+      "git branch -a",
+      "git branch --list",
+      "git remote branch",
+      "git show branches"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 2,
+    "language": 4,
+    "question": "Class TailwindCSS untuk membuat elemen dengan **bayangan besar** adalah?",
+    "answer": [
+      "shadow-xl",
+      "shadow-large",
+      "box-shadow-xl",
+      "elevation-xl"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 1,
+    "language": 3,
+    "question": "Perintah untuk **menginisialisasi project Bun baru** dengan `package.json` adalah?",
+    "answer": [
+      "bun init",
+      "bun create",
+      "bun new",
+      "bun setup"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 4,
+    "language": 1,
+    "question": "Cara mengakses **header request** di dalam handler ElysiaJS adalah?",
+    "answer": [
+      "({ headers }) => headers[\"authorization\"]",
+      "({ req }) => req.header(\"authorization\")",
+      "({ request }) => request.headers",
+      "({ ctx }) => ctx.header"
+    ],
+    "correct_answer": 0,
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 1,
+    "category": 2,
+    "language": 2,
+    "question": "Class TailwindCSS untuk membuat **teks miring (italic)** adalah?",
+    "answer": [
+      "italic",
+      "text-italic",
+      "font-italic",
+      "style-italic"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 3,
+    "language": 3,
+    "question": "Perintah untuk **mengambil perubahan** dari remote tanpa langsung merge adalah?",
+    "answer": [
+      "git fetch",
+      "git pull",
+      "git sync",
+      "git download"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 1,
+    "language": 1,
+    "question": "Cara mengimpor **tipe TypeScript** dari sebuah file di Bun adalah?",
+    "answer": [
+      "import type { User } from \"./types\"",
+      "import { type User } from \"./types\"",
+      "require type { User } from \"./types\"",
+      "Pilihan A dan B benar"
+    ],
+    "correct_answer": 3,
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 1,
+    "category": 4,
+    "language": 1,
+    "question": "Cara membuat **instance plugin reusable** di ElysiaJS agar bisa dipakai di banyak app adalah?",
+    "answer": [
+      "new Elysia({ name: \"plugin\" }).get(...)",
+      "Elysia.plugin(...)",
+      "createPlugin(...)",
+      "new ElysiaPlugin(...)"
+    ],
+    "correct_answer": 0,
+    "difficulty": 3,
+    "points": 3
+  },
+  {
+    "type": 1,
+    "category": 2,
+    "language": 4,
+    "question": "Class TailwindCSS untuk **memotong teks** yang terlalu panjang dengan ellipsis (`...`) adalah?",
+    "answer": [
+      "truncate",
+      "text-ellipsis",
+      "overflow-text",
+      "clip-text"
+    ],
+    "correct_answer": 0,
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 1,
+    "category": 3,
+    "language": 3,
+    "question": "Perintah untuk **membatalkan commit terakhir** namun tetap menyimpan perubahan file di working directory adalah?",
+    "answer": [
+      "git reset --soft HEAD~1",
+      "git reset --hard HEAD~1",
+      "git revert HEAD",
+      "git undo HEAD"
+    ],
+    "correct_answer": 0,
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 2,
+    "category": 4,
+    "language": 1,
+    "question": "Manakah yang merupakan cara valid untuk **mendekorasi context** (state/store) di ElysiaJS?",
+    "answer": [
+      ".decorate(\"db\", db)",
+      ".state(\"count\", 0)",
+      ".derive(() => ({ user: null }))",
+      ".inject({ db })"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 3,
+    "points": 3
+  },
+  {
+    "type": 2,
+    "category": 2,
+    "language": 2,
+    "question": "Manakah class TailwindCSS untuk mengatur **z-index** yang valid?",
+    "answer": [
+      "z-0",
+      "z-10",
+      "z-50",
+      "z-1000"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 2,
+    "category": 1,
+    "language": 1,
+    "question": "Manakah pernyataan yang **benar tentang Bun bundler**?",
+    "answer": [
+      "Mendukung tree shaking",
+      "Bisa bundle untuk browser dan server",
+      "Mendukung TypeScript secara native",
+      "Memerlukan konfigurasi webpack"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 2,
+    "category": 3,
+    "language": 3,
+    "question": "Manakah yang termasuk strategi **merge conflict resolution** di Git?",
+    "answer": [
+      "Mengedit file secara manual",
+      "git checkout --ours file.txt",
+      "git checkout --theirs file.txt",
+      "git conflict resolve"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 2,
+    "category": 2,
+    "language": 4,
+    "question": "Manakah class TailwindCSS yang digunakan untuk mengatur **cursor**?",
+    "answer": [
+      "cursor-pointer",
+      "cursor-not-allowed",
+      "cursor-wait",
+      "cursor-hand"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 2,
+    "category": 1,
+    "language": 3,
+    "question": "Manakah perintah yang valid untuk **menghapus package** di Bun?",
+    "answer": [
+      "bun remove <pkg>",
+      "bun rm <pkg>",
+      "bun uninstall <pkg>",
+      "bun delete <pkg>"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 2,
+    "category": 4,
+    "language": 1,
+    "question": "Manakah yang merupakan **tipe primitif** yang tersedia di Elysia type system (`t`)?",
+    "answer": [
+      "t.String()",
+      "t.Number()",
+      "t.Boolean()",
+      "t.Null()"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 2,
+    "category": 3,
+    "language": 3,
+    "question": "Manakah file/folder yang **sebaiknya dimasukkan ke `.gitignore`**?",
+    "answer": [
+      "node_modules/",
+      ".env",
+      "dist/",
+      "src/index.ts"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 2,
+    "category": 2,
+    "language": 4,
+    "question": "Manakah class TailwindCSS yang valid untuk mengatur **aspect ratio**?",
+    "answer": [
+      "aspect-square",
+      "aspect-video",
+      "aspect-auto",
+      "aspect-16/9"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 2,
+    "category": 1,
+    "language": 1,
+    "question": "Manakah yang merupakan **Web API** yang didukung langsung oleh Bun tanpa polyfill?",
+    "answer": [
+      "fetch()",
+      "WebSocket",
+      "ReadableStream",
+      "XMLHttpRequest"
+    ],
+    "correct_answer": [
+      0,
+      1,
+      2
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 2,
+    "language": 4,
+    "question": "Lengkapi class untuk membuat **navbar sticky** yang menempel di atas saat scroll:\n```html\n<nav class=\"<<6>> <<3>>-0 w-full bg-white shadow\">\n  Navbar\n</nav>\n```",
+    "answer": "<nav class=\"<<6>> <<3>>-0 w-full bg-white shadow\">\n\tNavbar\n</nav>",
+    "correct_answer": [
+      "sticky",
+      "top"
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 1,
+    "language": 1,
+    "question": "Lengkapi kode untuk membuat **WebSocket server** sederhana dengan Bun:\n```js\nBun.serve({\n  port: 3000,\n  fetch(req, server) {\n    if (server.<<7>>(req)) return;\n    return new Response(\"HTTP\");\n  },\n  <<9>>: {\n    message(ws, msg) { ws.send(msg); }\n  }\n});\n```",
+    "answer": "Bun.serve({\n\tport: 3000,\n\tfetch(req, server) {\n\t\tif (server.<<7>>(req)) return;\n\t\treturn new Response(\"HTTP\");\n\t},\n\t<<9>>: {\n\t\tmessage(ws, msg) { ws.send(msg); }\n\t}\n});",
+    "correct_answer": [
+      "upgrade",
+      "websocket"
+    ],
+    "difficulty": 3,
+    "points": 3
+  },
+  {
+    "type": 3,
+    "category": 3,
+    "language": 3,
+    "question": "Lengkapi perintah untuk **menandai commit** sebagai versi rilis:\n```bash\ngit <<3>> -a v1.0.0 -m \"Release version 1.0.0\"\n```",
+    "answer": "git <<3>> -a v1.0.0 -m \"Release version 1.0.0\"",
+    "correct_answer": [
+      "tag"
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 4,
+    "language": 1,
+    "question": "Lengkapi kode ElysiaJS untuk menggunakan **JWT plugin** melakukan sign token:\n```js\nimport { jwt } from \"@elysiajs/jwt\";\napp\n  .use(jwt({ secret: \"mysecret\" }))\n  .get(\"/token\", async ({ <<3>> }) => {\n    return await jwt.<<4>>({ id: 1 });\n  });\n```",
+    "answer": "import { jwt } from \"@elysiajs/jwt\";\napp\n\t.use(jwt({ secret: \"mysecret\" }))\n\t.get(\"/token\", async ({ <<3>> }) => {\n\t\treturn await jwt.<<4>>({ id: 1 });\n\t});",
+    "correct_answer": [
+      "jwt",
+      "sign"
+    ],
+    "difficulty": 3,
+    "points": 3
+  },
+  {
+    "type": 3,
+    "category": 2,
+    "language": 2,
+    "question": "Lengkapi class untuk membuat **gradient horizontal** dari biru ke ungu:\n```html\n<div class=\"bg-<<8>>-to-r from-blue-500 <<8>>-purple-500\">\n  Gradient\n</div>\n```",
+    "answer": "<div class=\"bg-<<8>>-to-r from-blue-500 <<8>>-purple-500\">\n\tGradient\n</div>",
+    "correct_answer": [
+      "gradient",
+      "to"
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 1,
+    "language": 3,
+    "question": "Lengkapi perintah untuk **build project** Bun menjadi single executable:\n```bash\nbun <<5>> --compile --outfile app ./src/index.ts\n```",
+    "answer": "bun <<5>> --compile --outfile app ./src/index.ts",
+    "correct_answer": [
+      "build"
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 3,
+    "language": 3,
+    "question": "Lengkapi perintah untuk **cherry-pick** satu commit dari branch lain:\n```bash\ngit <<11>> abc1234\n```",
+    "answer": "git <<11>> abc1234",
+    "correct_answer": [
+      "cherry-pick"
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 4,
+    "language": 1,
+    "question": "Lengkapi kode untuk **menambahkan global state** yang bisa diakses semua route di ElysiaJS:\n```js\napp\n  .<<5>>(\"version\", \"1.0.0\")\n  .get(\"/info\", ({ store }) => store.version);\n```",
+    "answer": "app\n\t.<<5>>(\"version\", \"1.0.0\")\n\t.get(\"/info\", ({ store }) => store.version);",
+    "correct_answer": [
+      "state"
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 2,
+    "language": 4,
+    "question": "Lengkapi class TailwindCSS agar teks **tidak bisa diseleksi** oleh user:\n```html\n<button class=\"<<11>> cursor-pointer px-4 py-2\">\n  Click Me\n</button>\n```",
+    "answer": "<button class=\"<<11>> cursor-pointer px-4 py-2\">\n\tClick Me\n</button>",
+    "correct_answer": [
+      "select-none"
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 3,
+    "category": 1,
+    "language": 1,
+    "question": "Lengkapi kode untuk membuat **test case** menggunakan Bun test runner:\n```js\nimport { <<4>>, <<6>> } from \"bun:test\";\n\n<<4>>(\"adds numbers\", () => {\n  <<6>>(1 + 1).toBe(2);\n});\n```",
+    "answer": "import { <<4>>, <<6>> } from \"bun:test\";\n\n<<4>>(\"adds numbers\", () => {\n\t<<6>>(1 + 1).toBe(2);\n});",
+    "correct_answer": [
+      "test",
+      "expect"
+    ],
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 4,
+    "category": 3,
+    "language": 3,
+    "question": "Lengkapi perintah untuk **push branch** ke remote dan set upstream sekaligus. Bisa `-u` atau `--set-upstream`:\n```bash\ngit push <<18>> origin main\n```",
+    "answer": "git push <<18>> origin main",
+    "correct_answer": "(-u|--set-upstream)",
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 4,
+    "category": 2,
+    "language": 4,
+    "question": "Lengkapi class untuk mengatur **padding horizontal** saja. Bisa `px-4`, `px-6`, atau `px-8`:\n```html\n<div class=\"<<4>> py-2 bg-gray-100\">Content</div>\n```",
+    "answer": "<div class=\"<<4>> py-2 bg-gray-100\">Content</div>",
+    "correct_answer": "px-[0-9]+",
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 4,
+    "category": 1,
+    "language": 1,
+    "question": "Lengkapi kode untuk **spawn child process** menggunakan Bun. Bisa `Bun.spawn` atau `Bun.spawnSync`:\n```js\nconst proc = <<14>>([\"ls\", \"-la\"]);\nconst output = await new Response(proc.stdout).text();\n```",
+    "answer": "const proc = <<14>>([\"ls\", \"-la\"]);\nconst output = await new Response(proc.stdout).text();",
+    "correct_answer": "Bun\\.spawn(Sync)?",
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 4,
+    "category": 4,
+    "language": 1,
+    "question": "Lengkapi kode untuk **throw HTTP error** di ElysiaJS. Bisa menggunakan `error(404, ...)` atau `new Error(...)`:\n```js\napp.get(\"/user/:id\", ({ params, <<5>> }) => {\n  const user = db.find(params.id);\n  if (!user) return <<5>>(404, \"Not Found\");\n  return user;\n});\n```",
+    "answer": "app.get(\"/user/:id\", ({ params, <<5>> }) => {\n\tconst user = db.find(params.id);\n\tif (!user) return <<5>>(404, \"Not Found\");\n\treturn user;\n});",
+    "correct_answer": "error",
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 4,
+    "category": 2,
+    "language": 2,
+    "question": "Lengkapi class untuk mengatur **warna teks** menjadi abu-abu. Bisa `text-gray-500`, `text-gray-600`, atau `text-gray-700`:\n```html\n<p class=\"<<16>> text-sm\">Deskripsi singkat</p>\n```",
+    "answer": "<p class=\"<<16>> text-sm\">Deskripsi singkat</p>",
+    "correct_answer": "text-gray-(4|5|6|7)[0-9]{2}",
+    "difficulty": 1,
+    "points": 1
+  },
+  {
+    "type": 4,
+    "category": 3,
+    "language": 3,
+    "question": "Lengkapi perintah untuk **mengganti nama branch** saat ini. Bisa `-m` atau `--move`:\n```bash\ngit branch <<8>> nama-baru\n```",
+    "answer": "git branch <<8>> nama-baru",
+    "correct_answer": "(-m|--move)",
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 4,
+    "category": 1,
+    "language": 1,
+    "question": "Lengkapi kode untuk **membaca environment variable** dengan nilai default jika tidak ada. Bisa `??` atau `||`:\n```js\nconst PORT = <<24>>;\n```",
+    "answer": "const PORT = <<24>>;",
+    "correct_answer": "(Bun\\.env|process\\.env)\\.PORT\\s*(\\?\\?|\\|\\|)\\s*['\"]?[0-9]+['\"]?",
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 4,
+    "category": 4,
+    "language": 1,
+    "question": "Lengkapi kode untuk **guard route** dengan pengecekan header Authorization. Bisa menggunakan `onBeforeHandle` atau `guard`:\n```js\napp.<<13>>(({ headers, error }) => {\n  if (!headers.authorization)\n    return error(401, \"Unauthorized\");\n});\n```",
+    "answer": "app.<<13>>(({ headers, error }) => {\n\tif (!headers.authorization)\n\t\treturn error(401, \"Unauthorized\");\n});",
+    "correct_answer": "(onBeforeHandle|guard)",
+    "difficulty": 3,
+    "points": 3
+  },
+  {
+    "type": 4,
+    "category": 2,
+    "language": 4,
+    "question": "Lengkapi class untuk **focus ring** pada input form. Bisa `focus:ring-2`, `focus:ring-4`, atau `focus:outline-none`:\n```html\n<input class=\"border rounded px-3 py-2 <<20>>\" />\n```",
+    "answer": "<input class=\"border rounded px-3 py-2 <<20>>\" />",
+    "correct_answer": "focus:(ring-[0-9]+|outline-none)",
+    "difficulty": 2,
+    "points": 2
+  },
+  {
+    "type": 4,
+    "category": 3,
+    "language": 3,
+    "question": "Lengkapi perintah untuk **memfilter git log** berdasarkan penulis. Bisa `--author=\"nama\"` atau `--author=email`:\n```bash\ngit log <<22>> --oneline\n```",
+    "answer": "git log <<22>> --oneline",
+    "correct_answer": "--author=[\"']?[\\w\\s@\\.]+[\"']?",
+    "difficulty": 2,
+    "points": 2
+  }
+]

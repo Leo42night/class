@@ -1,3 +1,4 @@
+# SETUP setelah run setup_sheet.py & sudah ada run submission_get_setup.py
 # menduplikasi sheet (dipakai untuk setup template pengumpulan tugas di spreadsheet)
 # !!! Pakai ini ketika pertama buat sheet tugas. Buat 1 sheet utama dulu
 

@@ -1,0 +1,90 @@
+#parameter
+- tidak ada dependency di package.json root (& tidak ada compilerOptions)
+- library frontend vite+react-ts+tailwind 4+ShadCN terinstall di apps/frontend package.json
+- folder frontend tidak kosong (hapus .git/ di apps/frontend)
+- Konfigurasi Prisma untuk generate client & model user ditambahkan
+- import PrismaClient dari /src/generated/prisma
+- run bun install & bun dev work (after set `dotenv` package .env DATABASE_URL="file:./dev.db", prisma generate, prisma seed, add kill-port in fe)
+- App.tsx berisi test variasi Button ShadCN (monorepo 1)
+- ApiTest.tsx koneksi Backend & shared (monorepo 1)
+- App2.tsx berisi table tampil dari database (monorepo 2)
+
+> dzaky
+-100 Tidak mengumpulkan tugas
+> evan
+-100 Tidak mengumpulkan tugas
+> m1_arifqu
+-100 Tidak mengumpulkan tugas
+> nadylla
+-100 Tidak mengumpulkan tugas
+
+> adhelia
+-5 package.json root tidak boleh ada dependency
+-50 File apps\frontend kosong (.git/ lupa dihapus)
+-10 schema.prisma: `url` is no longer supported in schema.prisma
+> aisyah
+> andy
+-15 tidak ada dependency class-variance-authority, clsx, & tailwind-merge (harusnya otomatis ketika init shadcn)
+> arjun
+> aurellya
+-5 package.json root tidak boleh ada dependency
+-5 db.ts: PrismaClient tidak dari ../src/generated/prisma
+-10 schema.prisma: runtime = "bun" tidak ada
+-10 App.tsx harusnya berisi test variasi Button dari ShadCN
+> chalysta
+-5 package.json root tidak boleh ada dependency
+> febrianti
+-5 db.ts: PrismaClient tidak dari ../src/generated/prisma
+> florecita
+-50 File apps\frontend kosong (.git/ lupa dihapus)
+> frans
+-5 not ideal structure: proyek dalam subfolder
+-10 schema.prisma: runtime = "bun" tidak ada
+-20 ApiTest.tsx tidak ada
+-10 App2.tsx harusnya di apps/frontend bukan disini, ui App2.tsx tidak rapi
+
+> ghina
+-5 package.json root tidak boleh ada dependency
+-50 File apps\frontend kosong (.git/ lupa dihapus)
+-10 schema.prisma: runtime = "bun", engineType, & output tidak ada
+-10 schema.prisma: `url` is no longer supported in schema.prisma
+-5 db.ts: PrismaClient tidak dari ../src/generated/prisma
+-10 db.ts: PrismaLibSql tidak dipakai
+
+> iqlima
+-5 package.json root tidak boleh ada dependency
+-50 File apps\frontend kosong (.git/ lupa dihapus)
+-10 schema.prisma: runtime = "bun", engineType, & output tidak ada
+-5 db.ts: PrismaClient tidak dari ../src/generated/prisma
+-10 schema.prisma: `url` is no longer supported in schema.prisma (gunakan prisma versi terbaru 7^)
+-10 db.ts: PrismaLibSql tidak dipakai
+-5 tidak ada file prisma.config.ts (pakai prisma versi 7^ ya)
+
+> kania
+-5 package.json root tidak boleh ada dependency
+
+> khairunnisa
+-50 File apps\frontend kosong (.git/ lupa dihapus)
+-10 schema.prisma: runtime = "bun" tidak ada (gunakan prisma versi terbaru 7^)
+-10 db.ts: PrismaLibSql tidak dipakai
+-5 tidak ada file prisma.config.ts (pakai prisma versi 7^ ya)
+
+> kharizma
+-10 schema.prisma: runtime = "bun" tidak ada
+-10 kenapa ada compilerOptions di package.json root?
+-10 schema.prisma: `url` is no longer supported in schema.prisma (prisma versi 7^ gk butuh url di schema.prisma)
+
+> m2_marcello
+-5 package.json root tidak boleh ada dependency
+-5 dev.db tidak boleh ada di root
+-15 apps/frontend: '@tailwindcss/vite' gk di install (dibutuhkan vite.config.ts untuk run bun dev). 
+-15 apps/frontend: gk install react,  react-dom (harusnya otomatis terinstall saat run `bunx create-vite frontend --template react-ts`). dependency di package.json ditambah, bukan di timpa ya :>
+-15 apps/frontend: tidak ada: class-variance-authority, radix-ui, clsx, tailwind-merge (ini harusnya otomatis terinstall saat run `bunx --bun shadcn@latest init`), shared cuma ditambahkan ke dependency, package lain jangan dihapus. tsconfig.json cuma reference path dari tsconfig.app.json ya :>. & setingan path di tambahkan ke tsconfig.app.json, setingan lain jangan dihapus.
+-15 apps/frontend: 'tailwindcss', `tw-animate-css', `shadcn`, '@fontsource-variable/geist' tidak ada. dibutuhkan file index.css
+
+> m3_rafli
+-50 File apps\frontend kosong (.git/ lupa dihapus)
+-50 apps\api kosong
+
+> regisha
+> tesa

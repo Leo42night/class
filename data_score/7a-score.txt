@@ -1,0 +1,47 @@
+#parameter
+- deadline: 2026-03-27
+- 4 ss ditampilkan (Classroom API, Form Oauth Client ID, Popup Oauth Permission, & UI List data Course)
+
+> nadylla
+-100 Tidak mengumpulkan tugas
+
+> adhelia
+> aisyah
+> andy
+> arjun
+> aurellya
+> chalysta
+> dzaky
+-30 telat 1 hari
+-25 ss classroom API tidak ada
+-25 ss Form Oauth Client ID tidak ada
+> evan
+> febrianti
+> florecita
+-25 ss classroom API tidak ada
+> frans
+> ghina
+> iqlima
+> kania
+> khairunnisa
+> kharizma
+> m1_arifqu
+> m2_marcello
+> m3_rafli
+> regisha
+> tesa
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

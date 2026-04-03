@@ -1,0 +1,47 @@
+#parameter
+- deadline: 2026-03-27
+- 4 ss ditampilkan (Classroom API, Form Oauth Client ID, Popup Oauth Permission Classroom API, & UI List data Course)
+
+> adella
+-25 ss bukan halaman redirect Popup Oauth Permission Classroom API
+> athallah
+> atikoh
+> audy
+> christian
+> fahdil
+> gabriela
+> irene
+> jesika
+> kayla
+-25 ss bukan halaman Form Oauth Client ID (tinggal lihat aja halaman di web nya)
+> lubna
+> m1_fadjri
+> m2_jihan
+> m3_rasyid
+-25 ss bukan halaman Form Oauth Client ID (tinggal lihat aja halaman di web nya)
+> nabil_fauzan
+> nabila
+> nadya
+-25 ss bukan halaman open Classroom API
+> nayla
+> olivia
+> prilia
+-25 tidak ada ss halaman open Classroom API
+> raden
+> radika
+> rafli
+> rifa_dwi
+> rito
+> rola
+> salsabila
+> saskia
+> shalwa
+-25 ss list data Course tidak ada
+-15 ss popup Oauth Permission, cuma ada 1 permission (lihat kelas), harusnya ada 2 (lihat tugas & kelas)
+> syafira
+> syarifah
+> tan
+> timothy
+> viona
+> virsya
+> zulfikarnaen

@@ -1,0 +1,16 @@
+# /b (Bare format): Menghilangkan detail seperti ukuran file, tanggal, dan header. Hanya menampilkan nama.
+# /ad (Attribute Directory): Memastikan yang masuk ke daftar hanya folder/direktori saja, file tidak akan ikut terbawa.
+dir /b /ad > daftar_folder.txt
+
+# add file & line in all sub dir
+for /d %D in (*) do echo DATABASE_URL="file:./dev.db" > "%D\apps\backend\.env"
+
+# del file in all sub dir
+for /d %D in (*) do del "%D\apps\backend\.env"
+
+
+
+
+
+
+

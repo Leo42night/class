@@ -1,0 +1,52 @@
+#parameter
+- deadline: 2026-03-29
+- test web frontend & backend berhasil (dapat diakses, fitur berjalan, security ada)
+  - be /users?key=learn terlock
+- ScreenShot (SS) Beberapa Konfigurasi Penting:
+  - web Turso: Halaman `Edit Data`
+  - Web Frontend production: Halaman classroom yang menampilkan list submisi classroom yang diambil dari API Google.
+  - Vercel project: Halaman `Overview` yang meampilkan preview dan informasi status dari kedua proyek (Frontend & Backend).
+  - Vercel project: Halaman `Deployments` yang berisi list commit deploy dari kedua project (Frontend & Backend). awalnya sama, kemudian hanya be yang tertrigger deploy terbaru.
+
+> dzaky
+-100 Tidak mengumpulkan tugas
+> kania
+-100 Tidak mengumpulkan tugas
+> m1_arifqu
+-30 telat 1 hari
+> nadylla
+-100 Tidak mengumpulkan tugas
+
+> adhelia
+-25 test deploy backend only, frontend commit deployment masih ter trigger
+> aisyah
+> andy
+-25 test deploy backend only, frontend commit deployment masih ter trigger
+> arjun
+-25 tidak ada test deploy commit backend only
+> aurellya
+-25 tidak ada test deploy commit backend only
+> chalysta
+> evan
+-30 telat 1 hari
+-25 bukan halaman list submisi classroom
+> febrianti
+-25 test deploy backend only, frontend commit deployment masih ter trigger
+> florecita
+> frans
+> ghina
+> iqlima
+> khairunnisa
+> kharizma
+> m2_marcello
+> m3_rafli
+> regisha
+> tesa
+
+
+
+
+
+
+
+

@@ -1,3 +1,4 @@
+# simple: tampilkan daftar assignment
 import sys
 from cred import get_service_courses
 

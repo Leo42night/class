@@ -14,10 +14,16 @@ AUTH_SCOPES = [
     "https://www.googleapis.com/auth/classroom.student-submissions.students.readonly",
     "https://www.googleapis.com/auth/classroom.rosters.readonly",
     "https://www.googleapis.com/auth/classroom.coursework.students",
+    "https://www.googleapis.com/auth/classroom.rosters.readonly",
+    "https://www.googleapis.com/auth/classroom.profile.emails",
+    "https://www.googleapis.com/auth/classroom.profile.photos",
+    "https://www.googleapis.com/auth/drive.readonly",
+    "https://www.googleapis.com/auth/admin.reports.audit.readonly"
 ]
 
 
-def get_service_courses():
+def _get_auth_creds():
+    """Shared OAuth creds untuk Classroom & Drive."""
     creds = None
 
     if os.path.exists("token_auth.json"):
@@ -35,8 +41,7 @@ def get_service_courses():
         with open("token_auth.json", "w") as token:
             token.write(creds.to_json())
 
-    service = build("classroom", "v1", credentials=creds)
-    return service
+    return creds
 
 
 ## --- SPREADSHEET ---
@@ -52,3 +57,13 @@ def get_service_sheets():
     )
     service = build("sheets", "v4", credentials=creds)
     return service
+
+def get_service_courses():
+    return build("classroom", "v1", credentials=_get_auth_creds())
+
+
+def get_service_drive():
+    return build("drive", "v3", credentials=_get_auth_creds())
+
+def get_service_admin():
+    return build("admin", "reports_v1", credentials=_get_auth_creds())

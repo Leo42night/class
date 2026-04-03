@@ -1,7 +1,7 @@
 import sys
 import traceback
 from config.cred import get_service_courses
-from func.github_link_sheet import export_github
+from func.submission_get_setup import export_github
 from func.scoring import run_scoring
 from func.post_coursework import run_data_tugas
 from config.env import env
@@ -24,7 +24,7 @@ def work_menu(course_id, course_code, work):
     while True:
         tugas_ke = int(work["title"].split("#")[0])
         print(f"\nWork: {work['title']} (Tugas ke: {tugas_ke})")
-        print("1. Ambil GitHub → Clone & Spreadsheet")
+        print("1. Ambil GitHub → Spreadsheet -> Repo Local")
         print("2. Input Scoring → Sheet & Classroom")
         print("0. Kembali")
 
@@ -32,7 +32,12 @@ def work_menu(course_id, course_code, work):
 
         if action == "1":
             export_github(
-                course_id, work["id"], cfg["spreadsheet"], cfg["n_student"], course_code, tugas_ke
+                course_id,
+                work["id"],
+                cfg["spreadsheet"],
+                cfg["n_student"],
+                course_code,
+                tugas_ke,
             )
 
         elif action == "2":
