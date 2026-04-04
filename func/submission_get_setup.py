@@ -472,6 +472,22 @@ def _download_drive_file(service_drive, file_id, file_name, dest_dir):
         ).execute()
         drive_hash = meta.get("md5Checksum")
         mime_type  = meta.get("mimeType", "")
+        
+        # cek apakah Google Drive Folder → simpan ke links.txt
+        if mime_type == "application/vnd.google-apps.folder":
+            folder_url = f"https://drive.google.com/drive/folders/{file_id}"
+            ref_path = os.path.join(dest_dir, LINKS_FILE)
+            existing_urls = set()
+            if os.path.exists(ref_path):
+                with open(ref_path, "r", encoding="utf-8") as f:
+                    existing_urls = {line.strip() for line in f if line.strip()}
+            if folder_url in existing_urls:
+                print(f"  ⏭️  Drive folder link sudah ada (skip): {folder_url}")
+                return True
+            with open(ref_path, "a", encoding="utf-8") as f:
+                f.write(f"{file_name}\n{folder_url}\n\n")
+            print(f"  📁 Drive folder disimpan ke {LINKS_FILE}: {file_name}")
+            return True
 
         # cek apakah Google Docs file → gunakan export
         export_info = _GDOCS_EXPORT.get(mime_type)
@@ -495,6 +511,10 @@ def _download_drive_file(service_drive, file_id, file_name, dest_dir):
             local_path = os.path.join(dest_dir, candidate)
             if drive_hash and _file_hash(local_path) == drive_hash:
                 print(f"  ⏭️  Identik, skip: {candidate}")
+                return True
+            if not drive_hash and ext in (".pdf", ".docx", ".xlsx", ".pptx"):
+                # export GDocs: tidak ada hash → anggap sama jika nama sama
+                print(f"  ⏭️  Export sudah ada, skip: {candidate}")
                 return True
             candidate = f"{base}_{counter}{ext}"
             counter += 1
@@ -533,6 +553,14 @@ def _download_drive_file(service_drive, file_id, file_name, dest_dir):
         with open(ref_path, "a", encoding="utf-8") as f:
             f.write(f"{file_name}\n{url}\n\n")
         print(f"  🔗 Disimpan ke links.txt: {file_name}")
+        
+        # hapus file kosong yang terbuat sebelum error
+        if 'file_path' in locals() and os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                print(f"  🗑️  File kosong dihapus: {os.path.basename(file_path)}")
+            except Exception:
+                pass
         return False
 
 
@@ -561,7 +589,7 @@ def download_submissions(
 
     for sub in submissions:
         user_id = sub["userId"]
-
+        # !!! cukup download submisson yang terdapat di cache `classroom_submissions` 
         # Ambil nama student → cari codename yang cocok
         student = (
             service_classroom.courses()
@@ -599,7 +627,7 @@ def download_submissions(
         attachments = sub.get("assignmentSubmission", {}).get("attachments", [])
 
         if not attachments:
-            print(f"  [{matched_codename}] Tidak ada attachment.")
+            print(f"\n  [{matched_codename}] Tidak ada attachment.")
             continue
 
         print(f"\n  [{matched_codename}] {raw_name} — {len(attachments)} attachment(s)")
@@ -608,6 +636,8 @@ def download_submissions(
         seen_github = set()  # track github url dalam iterasi ini
 
         for att in attachments:
+            # !!! handle jika link https://drive.google.com/drive/folders, simpan ke links.txt beserta nama folder nya
+            
             # --- DriveFile ---
             if "driveFile" in att:
                 drive = att["driveFile"]
@@ -618,6 +648,7 @@ def download_submissions(
             # --- Link (GitHub sudah di-handle, catat sisanya) ---
             elif "link" in att:
                 url = att["link"]["url"]
+                title = att["link"].get("title", url)
                 ref_path = os.path.join(matched_folder, LINKS_FILE)
 
                 # baca existing urls sekali
@@ -769,6 +800,8 @@ def export_github(
     zero_score = []
 
     # cek cache repo_folder & zero_score
+    # !!! link repo ambil aja dari `classroom_submissions`
+    # !!! masukkan zero_score ke cache `classroom_submissions`
     cached_repo = _load_cache_repo(coursework_id)
     cached_score = _load_cache_score(coursework_id)
     has_cache = cached_repo is not None and cached_score is not None
@@ -1028,10 +1061,6 @@ def export_github(
         if codename  # skip string kosong
     }
     
-    # download history (tidak lama)
-    print("\nDownload submission history ke history.txt")
-    download_history(service_classroom, course_id, coursework_id, codename_to_folder)
-
     # File/Link Attachment other than main github repo
     confirm_dl = input("\nDownload attachment submission? (y/n) >> ").strip().lower()
     if confirm_dl == "y":
@@ -1040,5 +1069,9 @@ def export_github(
         )
     else:
         print("⏭️  Download attachment dilewati.")
-        
-    print(f"Folder dapat diakses di {target_local}")
+ 
+    # download history (tidak lama)
+    print("\nDownload submission history ke history.txt")
+    download_history(service_classroom, course_id, coursework_id, codename_to_folder)
+       
+    print(f"\nFolder dapat diakses di {target_local}")

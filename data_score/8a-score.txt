@@ -1,47 +1,60 @@
 #parameter
-- deadline: 2026-03-29
-- test web frontend & backend berhasil (dapat diakses, fitur berjalan, security ada)
-  - be /users?key=learn terlock
+- Up 27 Mar (Diedit 01.24), deadline: 2026-03-29
+- Link repo 
+- Link URL Production (frontend & backend) yang punya postfix *.vercel.app
 - ScreenShot (SS) Beberapa Konfigurasi Penting:
   - web Turso: Halaman `Edit Data`
   - Web Frontend production: Halaman classroom yang menampilkan list submisi classroom yang diambil dari API Google.
   - Vercel project: Halaman `Overview` yang meampilkan preview dan informasi status dari kedua proyek (Frontend & Backend).
   - Vercel project: Halaman `Deployments` yang berisi list commit deploy dari kedua project (Frontend & Backend). awalnya sama, kemudian hanya be yang tertrigger deploy terbaru.
+- test web frontend & backend berhasil (dapat diakses, fitur berjalan, security ada)
+  - be /users?key=learn terlock
+  - fe / (root), tabel data di backend database
 
 > dzaky
 -100 Tidak mengumpulkan tugas
-> kania
--100 Tidak mengumpulkan tugas
-> m1_arifqu
--30 telat 1 hari
 > nadylla
 -100 Tidak mengumpulkan tugas
 
 > adhelia
--25 test deploy backend only, frontend commit deployment masih ter trigger
+-25 ss deployment (gagal test Ignore Build Steps. BE change, FE masih ter-deploy)
 > aisyah
 > andy
--25 test deploy backend only, frontend commit deployment masih ter trigger
+-25 ss deployment (gagal test Ignore Build Steps. BE change, FE masih ter-deploy)
 > arjun
--25 tidak ada test deploy commit backend only
+-25 ss deployment (tidak ada test Ignore Build Steps)
 > aurellya
--25 tidak ada test deploy commit backend only
+-10 tidak ada link production frontend & backend
+-10 tidak ada ss halaman overview frontend & backend
+-25 ss deployment (tidak ada, tidak ada test Ignore Build Steps)
+-40 tidak dapat test backend karena link tidak diberikan
 > chalysta
 > evan
 -30 telat 1 hari
--25 bukan halaman list submisi classroom
+-25 ss deployment (tidak ada test Ignore Build Steps)
+-15 bukan halaman list submisi classroom
 > febrianti
--25 test deploy backend only, frontend commit deployment masih ter trigger
+-25 ss deployment (gagal test Ignore Build Steps. BE change, FE masih ter-deploy)
+-10 tidak ada ss halaman overview frontend & backend
 > florecita
 > frans
 > ghina
 > iqlima
+-25 ss deployment (gagal test Ignore Build Steps. FE change, BE masih ter-deploy)
+> kania
+-40 link repo tidak ada (tidak ditemukan di profile). tidak bisa mastikan deployment Ignore
 > khairunnisa
 > kharizma
+> m1_arifqu
+-30 telat 1 hari
+-25 ss deployment (tidak ada test Ignore Build Steps)
 > m2_marcello
+-25 ss deployment (gagal test Ignore Build Steps)
 > m3_rafli
 > regisha
 > tesa
+
+
 
 
 
