@@ -9,3 +9,6 @@ __pycache__
 *.csv
 .env
 secrets.txt
+data_score/*-score.txt
+data_tugas/*-work.json
+data_cache/*.json

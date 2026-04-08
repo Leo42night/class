@@ -12,11 +12,10 @@ from config.cred import get_service_sheets
 TAB = "Nilai"
 START_ROW = 3
 EMAIL_COL = "U"
-COL_MAX_SCORE = "V"
+COL_MAX_SCORE = "Y"  # Diubah dari V ke Y
 
 
 def get_course_by_code(code):  # 'a' or 'b' -> cid, course_name
-
     cid = env.COURSE_ID_B if code.lower() == "b" else env.COURSE_ID_A
     return cid, f"Praktikum PWL 2026 {code.upper()}"
 
@@ -35,7 +34,6 @@ if __name__ == "__main__":
     service = get_service_sheets()
     sheet = service.spreadsheets()
 
-    # Tentukan range: U3:V{START_ROW + N_STUDENT}
     range_name = (
         f"{TAB}!{EMAIL_COL}{START_ROW}:{COL_MAX_SCORE}{START_ROW + N_STUDENT - 1}"
     )
@@ -46,41 +44,57 @@ if __name__ == "__main__":
         result = (
             sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=range_name).execute()
         )
-
         rows = result.get("values", [])
 
         if not rows:
             print("Tidak ada data ditemukan.")
-        else:
-            print(f"Memproses {len(rows)} baris data ke {env.API_URL}/users/score...")
+            sys.exit()
 
-            for row in rows:
-                # Lewati jika baris kosong atau email tidak ada
-                if len(row) < 2:
-                    continue
+        # Filter data valid terlebih dahulu
+        valid_data = []
+        for row in rows:
+            if len(row) >= 5 and row[0] and row[4] != "":
+                valid_data.append({"email": row[0], "score": row[4]})
 
-                email = row[0]  # Dari Kolom U
-                score_max = row[1]  # Dari Kolom V
+        if not valid_data:
+            print("Tidak ada data valid (email/score kosong).")
+            sys.exit()
 
-                # Payload untuk API Anda
-                payload = {"email": email, "score_max": int(score_max)}
+        # --- TAMPILKAN DATA TERLEBIH DAHULU ---
+        print("\n" + "="*40)
+        print(f"{'EMAIL':<30} | {'MAX SCORE':<10}")
+        print("-" * 40)
+        for item in valid_data:
+            print(f"{item['email']:<30} | {item['score']:<10}")
+        print("="*40)
+        print(f"Total: {len(valid_data)} data siap dipost.")
 
-                # Kirim ke API (Asumsi menggunakan endpoint update score)
-                url = f"{env.API_URL}/users/score"  # Sesuaikan endpoint Anda
-                headers = {"Authorization": ""}
+        # --- KONFIRMASI ---
+        confirm = input(f"\nKirim data ke {env.API_URL}/users/score? (y/n): ")
+        if confirm.lower() != 'y':
+            print("Proses dibatalkan.")
+            sys.exit()
 
-                try:
-                    response = requests.put(url, json=payload, headers=headers)
-                    if response.status_code == 200:
-                        print(f" Berhasil: {email} -> {score_max}")
-                    else:
-                        print(
-                            f" Gagal: {email} | Status: {response.status_code} | {response.text}"
-                        )
-                except Exception as e:
-                    print(f" Error saat hit API untuk {email}: {str(e)}")
+        # --- PROSES PUSH KE API ---
+        print("\nMemproses push data...")
+        for item in valid_data:
+            email = item['email']
+            score_max = item['score']
+
+            payload = {"email": email, "score_max": int(score_max)}
+            url = f"{env.API_URL}/users/score"
+            headers = {"Authorization": ""} # Isi token jika diperlukan
+
+            try:
+                response = requests.put(url, json=payload, headers=headers)
+                if response.status_code == 200:
+                    print(f" Berhasil: {email} -> {score_max}")
+                else:
+                    print(f" Gagal: {email} | Status: {response.status_code} | {response.text}")
+            except Exception as e:
+                print(f" Error saat hit API untuk {email}: {str(e)}")
 
     except Exception as err:
-        print(f"Terjadi kesalahan pada Google Sheets API: {err}")
+        print(f"Terjadi kesalahan: {err}")
 
-    print("Selesai.")
+    print("\nSelesai.")

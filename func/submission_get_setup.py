@@ -24,16 +24,17 @@ CODENAME_COL = "F"
 _COL_INDEX = {col: i for i, col in enumerate("ABCDEFGHIJKLMNOPQRSTUVWXYZ")}
 EXP_FOLDER = "exp"
 REPO_FILE = "repo.txt"
-CACHE_FILE = "data_cache/classroom_submissions_{coursework_id}.json"
+CACHE_FILE = "data_cache/classroom_data_{coursework_id}.json"  # Single cache file
 LINKS_FILE = "links.txt"  # in each repo
 
 
 def _cache_path(coursework_id):
     os.makedirs("data_cache", exist_ok=True)
-    return f"data_cache/classroom_submissions_{coursework_id}.json"
+    return f"data_cache/classroom_data_{coursework_id}.json"
 
 
-def _load_cache(coursework_id) -> list[dict] | None:
+def _load_cache(coursework_id) -> dict | None:
+    """Load single cache file containing all data"""
     path = _cache_path(coursework_id)
     if os.path.exists(path):
         with open(path, "r", encoding="utf-8") as f:
@@ -41,59 +42,18 @@ def _load_cache(coursework_id) -> list[dict] | None:
     return None
 
 
-def _save_cache(coursework_id, data: list[dict]):
+def _save_cache(coursework_id, data: dict):
+    """Save all data to single cache file"""
     path = _cache_path(coursework_id)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
     print(f"Cache disimpan: {path}")
 
 
-def _cache_path_repo(coursework_id):
-    os.makedirs("data_cache", exist_ok=True)
-    return f"data_cache/repo_folder_{coursework_id}.json"
-
-
-def _cache_path_score(coursework_id):
-    os.makedirs("data_cache", exist_ok=True)
-    return f"data_cache/zero_score_{coursework_id}.json"
-
-
-def _load_cache_repo(coursework_id) -> list[str] | None:
-    path = _cache_path_repo(coursework_id)
-    if os.path.exists(path):
-        with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    return None
-
-
-def _load_cache_score(coursework_id) -> list[str] | None:
-    path = _cache_path_score(coursework_id)
-    if os.path.exists(path):
-        with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    return None
-
-
-def _save_cache_repo(coursework_id, data: list[str]):
-    path = _cache_path_repo(coursework_id)
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-    print(f"Cache repo_folder disimpan: {path}")
-
-
-def _save_cache_score(coursework_id, data: list[str]):
-    path = _cache_path_score(coursework_id)
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-    print(f"Cache zero_score disimpan: {path}")
-
-
 def _get_tab_name(service_sheets, spreadsheet_id, tugas_ke):
     meta = (
         service_sheets.spreadsheets()
-        .get(
-            spreadsheetId=spreadsheet_id, fields="sheets.properties"
-        )  # ← fields diperluas
+        .get(spreadsheetId=spreadsheet_id, fields="sheets.properties")
         .execute()
     )
     prefix = f"{tugas_ke}#"
@@ -157,7 +117,7 @@ def create_symlink(folder_target, folder_link, name_file):
 
     BAT_PATH = "C:/Tools/symlink.bat"
     target = os.path.abspath(f"{folder_target}/{name_file}")
-    link   = os.path.abspath(f"{folder_link}/{name_file}")
+    link = os.path.abspath(f"{folder_link}/{name_file}")
 
     for attempt in range(1, 3):  # max 2x percobaan
         result = subprocess.run(
@@ -169,14 +129,20 @@ def create_symlink(folder_target, folder_link, name_file):
 
         if os.path.exists(link):
             if attempt > 1:
-                print(f"✅ {name_file} di {folder_target} → sekarang ada di {folder_link} (attempt {attempt})")
+                print(
+                    f"✅ {name_file} di {folder_target} → sekarang ada di {folder_link} (attempt {attempt})"
+                )
             else:
-                print(f"✅ {name_file} di {folder_target} → sekarang ada di {folder_link}")
+                print(
+                    f"✅ {name_file} di {folder_target} → sekarang ada di {folder_link}"
+                )
             return True
 
         print(f"  ⚠️  Symlink belum terbuat (attempt {attempt}), coba lagi...")
 
-    print(f"❌ Gagal buat symlink setelah 2x percobaan: {result.stderr.strip() or result.stdout.strip()}")
+    print(
+        f"❌ Gagal buat symlink setelah 2x percobaan: {result.stderr.strip() or result.stdout.strip()}"
+    )
     return False
 
 
@@ -265,20 +231,6 @@ def selective_clone(target_dir, bat_path: str = "sparse_clone.bat"):
 
                 print(f"[OK] '{folder_name}' berhasil di-clone.")
 
-                # 6. Jalankan bun install di dalam folder repo yang baru di-clone
-                #    cwd=folder_name karena kita masih di target_dir
-                # print(f"Running bun install for {folder_name}...")
-                # subprocess.run(
-                #     "bun install",
-                #     shell=True,
-                #     check=True,
-                #     cwd=os.path.join(
-                #         target_dir, folder_name
-                #     ),  # ← eksplisit, tidak perlu chdir
-                # )
-
-                print(f"Selesai: {folder_name} berhasil di-clone tanpa node_modules.")
-
             except subprocess.CalledProcessError as e:
                 print(f"SKIP REPO: '{folder_name}' gagal: {e}")
                 continue
@@ -292,11 +244,8 @@ def selective_clone(target_dir, bat_path: str = "sparse_clone.bat"):
 
 def _sanitize_filename(name):
     """Ganti karakter tidak valid di nama file dengan underscore."""
-    # karakter tidak valid di Windows/Linux/Mac
     name = re.sub(r'[\\/*?:"<>|]', "_", name)
-    # strip leading/trailing spaces dan titik
     name = name.strip(". ")
-    # fallback jika nama jadi kosong
     return name or "unnamed"
 
 
@@ -314,12 +263,20 @@ def _drive_file_hash(service_drive, file_id):
     meta = service_drive.files().get(fileId=file_id, fields="md5Checksum").execute()
     return meta.get("md5Checksum")
 
+
 # MIME type Google Docs → format export
 _GDOCS_EXPORT = {
-    "application/vnd.google-apps.document":     ("application/pdf", ".pdf"),
-    "application/vnd.google-apps.spreadsheet":  ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ".xlsx"),
-    "application/vnd.google-apps.presentation": ("application/vnd.openxmlformats-officedocument.presentationml.presentation", ".pptx"),
+    "application/vnd.google-apps.document": ("application/pdf", ".pdf"),
+    "application/vnd.google-apps.spreadsheet": (
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        ".xlsx",
+    ),
+    "application/vnd.google-apps.presentation": (
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        ".pptx",
+    ),
 }
+
 
 def download_history(
     service_classroom, course_id, coursework_id, codename_to_folder: dict[str, str]
@@ -327,9 +284,6 @@ def download_history(
     """
     Download submission history (state & grade) ke history.txt
     di masing-masing folder codename.
-
-    ⚠️ Google Classroom REST API tidak mengekspose private comment guru-siswa.
-       Yang tersedia hanya submissionHistory (state + grade history).
     """
     print("\n-- DOWNLOAD history submission --")
 
@@ -343,11 +297,11 @@ def download_history(
     )
 
     STATE_LABEL = {
-        "NEW":                   "Belum dibuka",
-        "CREATED":               "Dibuat",
-        "TURNED_IN":             "Dikumpulkan",
-        "RETURNED":              "Dikembalikan",
-        "RECLAIMED_BY_STUDENT":  "Ditarik kembali oleh siswa",
+        "NEW": "Belum dibuka",
+        "CREATED": "Dibuat",
+        "TURNED_IN": "Dikumpulkan",
+        "RETURNED": "Dikembalikan",
+        "RECLAIMED_BY_STUDENT": "Ditarik kembali oleh siswa",
     }
 
     for sub in submissions:
@@ -401,8 +355,8 @@ def download_history(
                 sh = h["stateHistory"]
                 state_raw = sh.get("state", "?")
                 state_str = STATE_LABEL.get(state_raw, state_raw)
-                actor    = sh.get("actorUserId", "")
-                ts       = sh.get("stateTimestamp", "")
+                actor = sh.get("actorUserId", "")
+                ts = sh.get("stateTimestamp", "")
                 lines.append(f"[STATUS] {state_str}")
                 if ts:
                     lines.append(f"         Waktu : {ts}")
@@ -412,12 +366,12 @@ def download_history(
             elif "gradeHistory" in h:
                 gh = h["gradeHistory"]
                 grade_type = gh.get("gradeChangeType", "?")
-                points     = gh.get("pointsEarned", "")
+                points = gh.get("pointsEarned", "")
                 max_points = gh.get("maxPoints", "")
-                actor      = gh.get("actorUserId", "")
-                ts         = gh.get("gradeTimestamp", "")
+                actor = gh.get("actorUserId", "")
+                ts = gh.get("gradeTimestamp", "")
                 grade_label = {
-                    "DRAFT_GRADE_POINTS_EARNED_CHANGE":    "Draft grade diubah",
+                    "DRAFT_GRADE_POINTS_EARNED_CHANGE": "Draft grade diubah",
                     "ASSIGNED_GRADE_POINTS_EARNED_CHANGE": "Grade ditetapkan",
                 }.get(grade_type, grade_type)
 
@@ -446,33 +400,35 @@ def download_history(
             f.write(new_content)
         print(f"  ✅ [{matched_codename}] history.txt ({len(history)} entri)")
 
+
 # Mapping mimeType gambar → ekstensi
 _IMAGE_MIME_EXT = {
-    "image/jpeg":    ".jpg",
-    "image/png":     ".png",
-    "image/gif":     ".gif",
-    "image/webp":    ".webp",
-    "image/bmp":     ".bmp",
-    "image/tiff":    ".tiff",
+    "image/jpeg": ".jpg",
+    "image/png": ".png",
+    "image/gif": ".gif",
+    "image/webp": ".webp",
+    "image/bmp": ".bmp",
+    "image/tiff": ".tiff",
     "image/svg+xml": ".svg",
-    "image/heic":    ".heic",
-    "image/heif":    ".heif",
+    "image/heic": ".heic",
+    "image/heif": ".heif",
 }
+
 
 def _download_drive_file(service_drive, file_id, file_name, dest_dir):
     """Download satu file dari Google Drive ke dest_dir."""
     try:
-        # sanitasi nama file
         file_name = _sanitize_filename(file_name)
         base, ext = os.path.splitext(file_name)
 
-        # ambil metadata: hash + mimeType
-        meta = service_drive.files().get(
-            fileId=file_id, fields="md5Checksum,mimeType"
-        ).execute()
+        meta = (
+            service_drive.files()
+            .get(fileId=file_id, fields="md5Checksum,mimeType")
+            .execute()
+        )
         drive_hash = meta.get("md5Checksum")
-        mime_type  = meta.get("mimeType", "")
-        
+        mime_type = meta.get("mimeType", "")
+
         # cek apakah Google Drive Folder → simpan ke links.txt
         if mime_type == "application/vnd.google-apps.folder":
             folder_url = f"https://drive.google.com/drive/folders/{file_id}"
@@ -489,22 +445,19 @@ def _download_drive_file(service_drive, file_id, file_name, dest_dir):
             print(f"  📁 Drive folder disimpan ke {LINKS_FILE}: {file_name}")
             return True
 
-        # cek apakah Google Docs file → gunakan export
         export_info = _GDOCS_EXPORT.get(mime_type)
         if export_info:
             export_mime, export_ext = export_info
-            base = base or file_name   # pastikan base tidak kosong
+            base = base or file_name
             file_name = base + export_ext
-            drive_hash = None           # export tidak punya md5Checksum
+            drive_hash = None
         elif not ext:
-            # ← bukan GDocs, tidak ada ekstensi → coba dari mimeType
             inferred_ext = _IMAGE_MIME_EXT.get(mime_type)
             if inferred_ext:
                 file_name = file_name + inferred_ext
 
         base, ext = os.path.splitext(file_name)
 
-        # cek duplikat / identik
         candidate = file_name
         counter = 2
         while os.path.exists(os.path.join(dest_dir, candidate)):
@@ -513,7 +466,6 @@ def _download_drive_file(service_drive, file_id, file_name, dest_dir):
                 print(f"  ⏭️  Identik, skip: {candidate}")
                 return True
             if not drive_hash and ext in (".pdf", ".docx", ".xlsx", ".pptx"):
-                # export GDocs: tidak ada hash → anggap sama jika nama sama
                 print(f"  ⏭️  Export sudah ada, skip: {candidate}")
                 return True
             candidate = f"{base}_{counter}{ext}"
@@ -553,9 +505,8 @@ def _download_drive_file(service_drive, file_id, file_name, dest_dir):
         with open(ref_path, "a", encoding="utf-8") as f:
             f.write(f"{file_name}\n{url}\n\n")
         print(f"  🔗 Disimpan ke links.txt: {file_name}")
-        
-        # hapus file kosong yang terbuat sebelum error
-        if 'file_path' in locals() and os.path.exists(file_path):
+
+        if "file_path" in locals() and os.path.exists(file_path):
             try:
                 os.remove(file_path)
                 print(f"  🗑️  File kosong dihapus: {os.path.basename(file_path)}")
@@ -567,11 +518,7 @@ def _download_drive_file(service_drive, file_id, file_name, dest_dir):
 def download_submissions(
     service_classroom, course_id, coursework_id, codename_to_folder: dict[str, str]
 ):
-    """
-    Download semua attachment submission ke masing-masing folder codename.
-
-    codename_to_folder: { codename (str) → absolute path folder (str) }
-    """
+    """Download semua attachment submission ke masing-masing folder codename."""
     from config.cred import get_service_drive
 
     service_drive = get_service_drive()
@@ -589,8 +536,6 @@ def download_submissions(
 
     for sub in submissions:
         user_id = sub["userId"]
-        # !!! cukup download submisson yang terdapat di cache `classroom_submissions` 
-        # Ambil nama student → cari codename yang cocok
         student = (
             service_classroom.courses()
             .students()
@@ -600,7 +545,6 @@ def download_submissions(
         raw_name = _clean_name(student["profile"]["name"]["fullName"])
         name_lower = raw_name.casefold()
 
-        # Match ke codename (sama seperti logika di export_github)
         special_case = {"christian": "dr C"}
         matched_codename = None
         matched_folder = None
@@ -633,25 +577,20 @@ def download_submissions(
         print(f"\n  [{matched_codename}] {raw_name} — {len(attachments)} attachment(s)")
         os.makedirs(matched_folder, exist_ok=True)
 
-        seen_github = set()  # track github url dalam iterasi ini
+        seen_github = set()
 
         for att in attachments:
-            # !!! handle jika link https://drive.google.com/drive/folders, simpan ke links.txt beserta nama folder nya
-            
-            # --- DriveFile ---
             if "driveFile" in att:
                 drive = att["driveFile"]
                 file_id = drive["id"]
                 file_name = drive.get("title", file_id)
                 _download_drive_file(service_drive, file_id, file_name, matched_folder)
 
-            # --- Link (GitHub sudah di-handle, catat sisanya) ---
             elif "link" in att:
                 url = att["link"]["url"]
                 title = att["link"].get("title", url)
                 ref_path = os.path.join(matched_folder, LINKS_FILE)
 
-                # baca existing urls sekali
                 existing_urls = set()
                 if os.path.exists(ref_path):
                     with open(ref_path, "r", encoding="utf-8") as f:
@@ -661,7 +600,6 @@ def download_submissions(
                     if url in existing_urls or url in seen_github:
                         print(f"  ⏭️  GitHub link sudah ada (skip): {url}")
                     elif not seen_github:
-                        # github pertama → skip tapi catat
                         seen_github.add(url)
                         print(f"  ⏭️  GitHub link (skip): {url}")
                     else:
@@ -680,37 +618,33 @@ def download_submissions(
                     f.write(url + "\n")
                 print(f"  🔗 Link disimpan ke {LINKS_FILE}: {url}")
 
-            # --- YouTube ---
             elif "youTubeVideo" in att:
                 yt = att["youTubeVideo"]
                 video_url = f"https://youtu.be/{yt['id']}"
                 title = yt.get("title", yt["id"])
                 ref_path = os.path.join(matched_folder, "youtube.txt")
-                # cek duplikat sebelum append
                 existing_urls = set()
                 if os.path.exists(ref_path):
                     with open(ref_path, "r", encoding="utf-8") as f:
                         existing_urls = {line.strip() for line in f if line.strip()}
                 if video_url in existing_urls:
-                    print(f"  ⏭️  Link sudah ada (skip): {url}")
+                    print(f"  ⏭️  Link sudah ada (skip): {video_url}")
                     continue
                 with open(ref_path, "a", encoding="utf-8") as f:
                     f.write(f"{title}\n{video_url}\n\n")
                 print(f"  ▶️  YouTube disimpan ke youtube.txt: {title}")
 
-            # --- Form ---
             elif "form" in att:
                 form = att["form"]
                 form_url = form.get("formUrl", "")
                 title = form.get("title", "form")
                 ref_path = os.path.join(matched_folder, "forms.txt")
-                # cek duplikat sebelum append
                 existing_urls = set()
                 if os.path.exists(ref_path):
                     with open(ref_path, "r", encoding="utf-8") as f:
                         existing_urls = {line.strip() for line in f if line.strip()}
                 if form_url in existing_urls:
-                    print(f"  ⏭️  Link sudah ada (skip): {url}")
+                    print(f"  ⏭️  Link sudah ada (skip): {form_url}")
                     continue
                 with open(ref_path, "a", encoding="utf-8") as f:
                     f.write(f"{title}\n{form_url}\n\n")
@@ -718,8 +652,8 @@ def download_submissions(
 
             else:
                 print(f"  ❓ Tipe attachment tidak dikenal: {list(att.keys())}")
-   
-        
+
+
 # ---- Entry Function ----
 def export_github(
     course_id, coursework_id, spreadsheet_id, n_student, course_code, tugas_ke
@@ -729,46 +663,50 @@ def export_github(
     service_sheets = get_service_sheets()
 
     # =============================
-    # 1. Ambil submission Classroom
+    # 1. Load atau buat cache tunggal
     # =============================
-    submissions = (
-        service_classroom.courses()
-        .courseWork()
-        .studentSubmissions()
-        .list(courseId=course_id, courseWorkId=coursework_id)
-        .execute()
-    )
+    cache_data = _load_cache(coursework_id)
 
-    classroom_data: list[dict] = []
-    cached = _load_cache(coursework_id)
-
-    if cached:
-        print(f"\nCache coursework attachment ditemukan ({len(cached)} entri).")
+    if cache_data and cache_data.get("submissions"):
+        print(f"\nCache ditemukan ({len(cache_data['submissions'])} submissions).")
         use_cache = input("Gunakan cache? (y/n) >> ").strip().lower()
+        if use_cache == "y":
+            classroom_data = cache_data["submissions"]
+            repo_folder = cache_data.get("repo_list", [])
+            zero_score = cache_data.get("zero_score_list", [])
+            print(
+                f"Loaded dari cache: {len(classroom_data)} submissions, {len(repo_folder)} repos, {len(zero_score)} zero_score"
+            )
+        else:
+            classroom_data, repo_folder, zero_score = None, None, None
     else:
+        classroom_data, repo_folder, zero_score = None, None, None
         use_cache = "n"
 
-    if use_cache == "y":
-        classroom_data = cached
-        print(f"Loaded {len(classroom_data)} entri dari cache.")
-    else:
+    if use_cache != "y" or not cache_data:
         print("\nMengambil submission dari Google Classroom...")
 
+        submissions = (
+            service_classroom.courses()
+            .courseWork()
+            .studentSubmissions()
+            .list(courseId=course_id, courseWorkId=coursework_id)
+            .execute()
+        )
+
+        classroom_data = []
         for sub in submissions.get("studentSubmissions", []):
             user_id = sub["userId"]
-
             student = (
                 service_classroom.courses()
                 .students()
                 .get(courseId=course_id, userId=user_id)
                 .execute()
             )
-
             raw_name = student["profile"]["name"]["fullName"]
             name = _clean_name(raw_name)
             attachments = sub.get("assignmentSubmission", {}).get("attachments", [])
             repo = ""
-
             for att in attachments:
                 if "link" in att:
                     url = att["link"]["url"]
@@ -780,61 +718,30 @@ def export_github(
                         )
                         repo = parts[0] + "/" + parts[1] if len(parts) > 1 else parts[0]
                         break
-
             print(f"  {name} → {repo or '(tidak ada)'}")
             classroom_data.append({"name": name, "repo": repo})
 
         classroom_data.sort(key=lambda x: x["name"].casefold())
-        _save_cache(coursework_id, classroom_data)
 
-    # =============================
-    # 2. Ambil tab & codename dari sheet
-    # =============================
-    tab_name, tab_gid = _get_tab_name(service_sheets, spreadsheet_id, tugas_ke)
+        # =============================
+        # 2. Ambil tab & codename dari sheet
+        # =============================
+        tab_name, tab_gid = _get_tab_name(service_sheets, spreadsheet_id, tugas_ke)
 
-    # =============================
-    # 4. Batch update ke sheet
-    # =============================
-    requests = []
-    repo_folder = []
-    zero_score = []
-
-    # cek cache repo_folder & zero_score
-    # !!! link repo ambil aja dari `classroom_submissions`
-    # !!! masukkan zero_score ke cache `classroom_submissions`
-    cached_repo = _load_cache_repo(coursework_id)
-    cached_score = _load_cache_score(coursework_id)
-    has_cache = cached_repo is not None and cached_score is not None
-
-    if has_cache:
-        print(
-            f"\nCache ditemukan: {len(cached_repo)} repo, {len(cached_score)} zero_score."
+        n_rows = max(n_student, len(classroom_data))
+        codenames = _fetch_col(
+            service_sheets, spreadsheet_id, tab_name, CODENAME_COL, n_rows
         )
 
-    confirm = (
-        input(f"\nUpdate data sheet [Nama,Repo] by Codename ke '{tab_name}'? (y/n) >> ")
-        .strip()
-        .lower()
-    )
-
-    n_rows = max(n_student, len(classroom_data))
-    codenames = _fetch_col(
-        service_sheets, spreadsheet_id, tab_name, CODENAME_COL, n_rows
-    )
-
-    if confirm == "y":
-        sheet_id = tab_gid
+        # =============================
+        # 3. Build repo_folder dan zero_score dari classroom_data
+        # =============================
+        repo_folder = []
+        zero_score = []
+        special_case = {"christian": "dr C"}
         codename_to_idx: dict[str, int] = {
             cn.casefold(): i for i, cn in enumerate(codenames) if cn
         }
-
-        name_col_i = _COL_INDEX[NAME_COL]
-        repo_col_i = _COL_INDEX[REPO_COL]
-        special_case = {"christian": "dr C"}
-
-        print("\n Build request & output [name,repo], sort by codename --")
-        print(f"codename_to_idx: {codename_to_idx}")
-        print(f"codenames raw: {codenames}")
 
         for entry in classroom_data:
             name = entry["name"]
@@ -852,97 +759,30 @@ def export_github(
                     break
 
             if matched_idx is None:
-                print(f"  ⚠️  Tidak ada codename untuk '{name}', Skip.")
                 continue
 
-            row_index = ROW_START - 1 + matched_idx
-            requests.append(
-                {
-                    "updateCells": {
-                        "start": {
-                            "sheetId": sheet_id,
-                            "rowIndex": row_index,
-                            "columnIndex": name_col_i,
-                        },
-                        "rows": [
-                            {"values": [{"userEnteredValue": {"stringValue": name}}]}
-                        ],
-                        "fields": "userEnteredValue",
-                    }
-                }
-            )
-
+            codename = codenames[matched_idx]
             if repo:
-                url = f"https://github.com/{repo}"
-                codename = codenames[matched_idx]
-                repo_folder.append(f"{url}.git {codename}")
-                requests.append(
-                    {
-                        "updateCells": {
-                            "start": {
-                                "sheetId": sheet_id,
-                                "rowIndex": row_index,
-                                "columnIndex": repo_col_i,
-                            },
-                            "rows": [
-                                {
-                                    "values": [
-                                        {
-                                            "userEnteredValue": {"stringValue": repo},
-                                            "textFormatRuns": [
-                                                {
-                                                    "startIndex": 0,
-                                                    "format": {
-                                                        "link": {"uri": url},
-                                                        "underline": True,
-                                                        "foregroundColor": {
-                                                            "red": 0,
-                                                            "green": 0,
-                                                            "blue": 1,
-                                                        },
-                                                    },
-                                                }
-                                            ],
-                                        }
-                                    ]
-                                }
-                            ],
-                            "fields": "userEnteredValue,textFormatRuns",
-                        }
-                    }
-                )
+                repo_folder.append(f"https://github.com/{repo}.git {codename}")
             else:
-                codename = codenames[matched_idx]
                 zero_score.append(f"> {codename}\n-100 Tidak mengumpulkan tugas")
 
-        # simpan cache setelah build
-        _save_cache_repo(coursework_id, repo_folder)
-        _save_cache_score(coursework_id, zero_score)
-
-        if requests:
-            service_sheets.spreadsheets().batchUpdate(
-                spreadsheetId=spreadsheet_id, body={"requests": requests}
-            ).execute()
-            print(f"\nUpdate {len(classroom_data)} nama & repo ke spreadsheet selesai.")
-        else:
-            print(f"request empty: {len(requests)}")
-
-    else:
-        # ← load dari cache jika skip
-        if has_cache:
-            repo_folder = cached_repo
-            zero_score = cached_score
-            print(
-                f"Loaded dari cache: {len(repo_folder)} repo, {len(zero_score)} zero_score."
+        # =============================
+        # 4. Update spreadsheet jika diperlukan
+        # =============================
+        confirm = (
+            input(
+                f"\nUpdate data sheet [Nama,Repo] by Codename ke '{tab_name}'? (y/n) >> "
             )
-        else:
-            print(
-                "Tidak ada cache, rebuild repo_folder & zero_score dari classroom_data..."
-            )
-            special_case = {"christian": "dr C"}
-            codename_to_idx: dict[str, int] = {
-                cn.casefold(): i for i, cn in enumerate(codenames) if cn
-            }
+            .strip()
+            .lower()
+        )
+
+        if confirm == "y":
+            sheet_id = tab_gid
+            name_col_i = _COL_INDEX[NAME_COL]
+            repo_col_i = _COL_INDEX[REPO_COL]
+            requests = []
 
             for entry in classroom_data:
                 name = entry["name"]
@@ -965,25 +805,89 @@ def export_github(
                 if matched_idx is None:
                     continue
 
+                row_index = ROW_START - 1 + matched_idx
+                requests.append(
+                    {
+                        "updateCells": {
+                            "start": {
+                                "sheetId": sheet_id,
+                                "rowIndex": row_index,
+                                "columnIndex": name_col_i,
+                            },
+                            "rows": [
+                                {
+                                    "values": [
+                                        {"userEnteredValue": {"stringValue": name}}
+                                    ]
+                                }
+                            ],
+                            "fields": "userEnteredValue",
+                        }
+                    }
+                )
+
                 if repo:
                     url = f"https://github.com/{repo}"
-                    codename = codenames[matched_idx]
-                    repo_folder.append(f"{url}.git {codename}")
-                else:
-                    codename = codenames[matched_idx]
-                    zero_score.append(f"> {codename}\n-100 Tidak mengumpulkan tugas")
+                    requests.append(
+                        {
+                            "updateCells": {
+                                "start": {
+                                    "sheetId": sheet_id,
+                                    "rowIndex": row_index,
+                                    "columnIndex": repo_col_i,
+                                },
+                                "rows": [
+                                    {
+                                        "values": [
+                                            {
+                                                "userEnteredValue": {
+                                                    "stringValue": repo
+                                                },
+                                                "textFormatRuns": [
+                                                    {
+                                                        "startIndex": 0,
+                                                        "format": {
+                                                            "link": {"uri": url},
+                                                            "underline": True,
+                                                            "foregroundColor": {
+                                                                "red": 0,
+                                                                "green": 0,
+                                                                "blue": 1,
+                                                            },
+                                                        },
+                                                    }
+                                                ],
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "fields": "userEnteredValue,textFormatRuns",
+                            }
+                        }
+                    )
 
-            # simpan sebagai cache untuk run berikutnya
-            _save_cache_repo(coursework_id, repo_folder)
-            _save_cache_score(coursework_id, zero_score)
-            print(
-                f"Rebuild selesai: {len(repo_folder)} repo, {len(zero_score)} zero_score."
-            )
+            if requests:
+                service_sheets.spreadsheets().batchUpdate(
+                    spreadsheetId=spreadsheet_id, body={"requests": requests}
+                ).execute()
+                print(
+                    f"\nUpdate {len(classroom_data)} nama & repo ke spreadsheet selesai."
+                )
 
-    # -- LOCAL HANDLER --
-    print("\n-- LOCAL HANDLER -- ")
+        # =============================
+        # 5. Simpan ke cache tunggal
+        # =============================
+        cache_data = {
+            "submissions": classroom_data,
+            "repo_list": repo_folder,
+            "zero_score_list": zero_score,
+            "coursework_id": coursework_id,
+            "course_id": course_id,
+        }
+        _save_cache(coursework_id, cache_data)
+
     # =============================
-    # 5. Simpan file repo.txt
+    # 6. Simpan file repo.txt
     # =============================
     with open(REPO_FILE, "w", encoding="utf-8") as f:
         for line in repo_folder:
@@ -991,15 +895,12 @@ def export_github(
     print(f"{REPO_FILE} berhasil dibuat ({len(repo_folder)} repo).")
 
     # =============================
-    # 6. Simpan zero_score ke {n}{x}-score.txt
+    # 7. Simpan zero_score ke {n}{x}-score.txt
     # =============================
-
     score_path = f"data_score/{tugas_ke}{course_code}-score.txt"
-
-    # add `#parameter` & `- deadline:{deadline_coursework}` at score_path (handle append or skip)
-    # tulis header #parameter jika file baru atau belum ada header
     deadline = _get_coursework_deadline(service_classroom, course_id, coursework_id)
     header = f"#parameter\n- deadline: {deadline}\n"
+
     if not os.path.exists(score_path):
         with open(score_path, "w", encoding="utf-8") as f:
             f.write(header)
@@ -1008,12 +909,10 @@ def export_github(
         with open(score_path, "r", encoding="utf-8") as f:
             existing_content = f.read()
         if "#parameter" not in existing_content:
-            # prepend header ke file yang sudah ada
             with open(score_path, "w", encoding="utf-8") as f:
                 f.write(header + "\n" + existing_content)
             print(f"{score_path} diperbarui: header #parameter ditambahkan.")
 
-    # append or skip attachment tidak ada link github repo/tidak mengumpulkan (-100)
     if os.path.exists(score_path):
         with open(score_path, "r", encoding="utf-8") as f:
             existing_content = f.read()
@@ -1021,7 +920,7 @@ def export_github(
         to_write = [e for e in zero_score if e.split("\n")[0] not in existing_content]
 
         with open(score_path, "a", encoding="utf-8") as f:
-            f.write("\n")  # pastikan tidak 1 line
+            f.write("\n")
             for entry in to_write:
                 f.write(entry + "\n")
 
@@ -1036,9 +935,7 @@ def export_github(
         print(f"{score_path} dibuat ({len(zero_score)} tidak mengumpulkan).")
 
     # =============================
-    # 7. Local setup:
-    # Buat symlink dari class/data_tugas/ ke repo/ppwl{n}{x}-sub/
-    # Pindahkan clone & data terkait -> run clone && bun install
+    # 8. Local setup
     # =============================
     create_symlink(
         "C:/Users/ADVAN/repou/class/data_score",
@@ -1047,21 +944,22 @@ def export_github(
     )
 
     target_local = f"C:/repo/ppwl{tugas_ke}{course_code}-sub"
-
-    # copy file repo.txt & files di exp/ ke target_local
     copy_files(target_local)
-
-    # cloning (filter node_modules)
     selective_clone(target_local)
 
-    # Build map codename → absolute path folder di target_local
+    # Build map codename → absolute path folder
+    tab_name, _ = _get_tab_name(service_sheets, spreadsheet_id, tugas_ke)
+    n_rows = max(n_student, len(cache_data["submissions"]))
+    codenames = _fetch_col(
+        service_sheets, spreadsheet_id, tab_name, CODENAME_COL, n_rows
+    )
+
     codename_to_folder = {
         codename: os.path.join(target_local, codename)
         for codename in codenames
-        if codename  # skip string kosong
+        if codename
     }
-    
-    # File/Link Attachment other than main github repo
+
     confirm_dl = input("\nDownload attachment submission? (y/n) >> ").strip().lower()
     if confirm_dl == "y":
         download_submissions(
@@ -1069,9 +967,8 @@ def export_github(
         )
     else:
         print("⏭️  Download attachment dilewati.")
- 
-    # download history (tidak lama)
+
     print("\nDownload submission history ke history.txt")
     download_history(service_classroom, course_id, coursework_id, codename_to_folder)
-       
+
     print(f"\nFolder dapat diakses di {target_local}")

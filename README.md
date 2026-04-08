@@ -89,11 +89,11 @@ Kirimkan post lewat fitur di **Main Menu**.
 - masukkan **course_code**, **spreadsheet_id**, & **n_students** (jumlah siswa di class tersebut) ke CLASS_CONFIG di main.py
 - run `py main.py <course_code>` anda dapat memilih:
   - `Lihat Work` -> pilih Work -> opsi: 
-    - **Ambil Github -> Clone & Spreadsheet**
+    - **Ambil Github -> Spreadsheet -> Local**
     - **Assign Score & Notes -> Sheet & Classroom**
   - `Post Tugas Baru` -> pilih template tugas.
 
-### Ambil Github -> Clone & Spreadsheet
+### Ambil Github -> Spreadsheet -> Local
 Fitur untuk mengambil link repo yang dikirim di Work (tugas) yg dipilih.
 Sebelum memilih menu ini, siapkan dulu:
 > di **google spreadsheet** rekap:

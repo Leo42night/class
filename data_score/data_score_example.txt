@@ -1,0 +1,87 @@
+#parameter
+- Up 27 Mar (Diedit 01.24), deadline: 2026-03-29
+- Link repo 
+- Link URL Production (frontend & backend) yang punya postfix *.vercel.app
+- ScreenShot (SS) Beberapa Konfigurasi Penting:
+  - web Turso: Halaman `Edit Data`
+  - Web Frontend production: Halaman classroom yang menampilkan list submisi classroom yang diambil dari API Google.
+  - Vercel project: Halaman `Overview` yang meampilkan preview dan informasi status dari kedua proyek (Frontend & Backend).
+  - Vercel project: Halaman `Deployments` berisi list commit deploy dari kedua project (Frontend & Backend). "Ignore Build Steps". awalnya sama, kemudian hanya be yang tertrigger deploy terbaru.
+- test web frontend & backend berhasil (dapat diakses, fitur berjalan, security ada)
+  - be /users?key=learn terlock
+  - fe / (root), tabel data di backend database
+
+> adella
+> athallah
+> atikoh
+> audy
+> christian
+-25 ss deployment (tidak ada test Ignore Build Steps)
+-30 backend test user security errror Invalid `prisma.user.findMany()` invocation
+-30 frontend root error tidak dapat ambil data dari db
+> fahdil
+-10 tidak ada submit link production frontend & backend
+-10 tidak ada ss halaman overview frontend & backend
+-40 tidak dapat test backend karena link tidak diberikan
+> gabriela
+> irene
+-25 ss deployment (tidak ada test Ignore Build Steps)
+> jesika
+-25 link production telat dikumpulkan (1 hari)
+-10 tidak ada ss halaman overview frontend & backend
+> kayla
+-10 tidak ada ss halaman overview frontend & backend
+> lubna
+-10 tidak ada ss halaman overview frontend & backend
+> m1_fadjri
+-25 ss deployment (tidak ada test Ignore Build Steps)
+-30 frontend (kenapa classroom ada di root?)
+> m2_jihan
+> m3_rasyid
+-10 tidak ada ss halaman overview frontend & backend
+> nabil_fauzan
+-25 ss deployment (test Ignore Build Steps gagal)
+> nabila
+-10 tidak ada ss halaman overview frontend & backend
+> nadya
+-25 ss deployment (tidak ada test Ignore Build Steps)
+-10 tidak ada ss halaman overview frontend & backend
+-25 test backend secure key=learn gagal akses
+> nayla
+> olivia
+-10 tidak ada ss halaman overview frontend & backend
+> prilia
+-20 ss deployment (Ignore berhasil, tapi tidak ada submisi) Folder drive tidak dapat diakses
+-10 ss overview (tidak ada submisi)
+-10 ss Turso Edit Data (tidak ada submisi)
+-10 ss Web Frontend production Classroom data (tidak ada submisi)
+-30 frontend root error tidak dapat ambil data dari db
+> raden
+> radika
+-25 ss deployment (tidak ada test Ignore Build Steps)
+> rafli
+> rifa_dwi
+-10 tidak ada ss halaman overview frontend & backend
+> rito
+> rola
+> salsabila
+-25 ss deployment (tidak ada test Ignore Build Steps)
+-30 ss classroom bukan di web frontend sendiri
+-30 frontend root error css Tailwind tidak terbaca
+> saskia
+> shalwa
+> syafira
+-25 ss deployment (tidak ada test Ignore Build Steps)
+> syarifah
+> tan
+> timothy
+-25 ss deployment (tidak ada test Ignore Build Steps)
+> viona
+-25 ss deployment (tidak ada test Ignore Build Steps)
+-10 tidak ada ss halaman overview frontend & backend
+> virsya
+> zulfikarnaen
+-10 ss deployment (Ignore berhasil, tidak ada submisi deployment)
+
+
+
