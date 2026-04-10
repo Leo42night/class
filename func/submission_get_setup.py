@@ -671,6 +671,7 @@ def export_github(
         print(f"\nCache ditemukan ({len(cache_data['submissions'])} submissions).")
         use_cache = input("Gunakan cache? (y/n) >> ").strip().lower()
         if use_cache == "y":
+            instruction_link = cache_data["instruction_link"]
             classroom_data = cache_data["submissions"]
             repo_folder = cache_data.get("repo_list", [])
             zero_score = cache_data.get("zero_score_list", [])
@@ -678,8 +679,10 @@ def export_github(
                 f"Loaded dari cache: {len(classroom_data)} submissions, {len(repo_folder)} repos, {len(zero_score)} zero_score"
             )
         else:
+            instruction_link = None
             classroom_data, repo_folder, zero_score = None, None, None
     else:
+        instruction_link = None
         classroom_data, repo_folder, zero_score = None, None, None
         use_cache = "n"
 
@@ -770,7 +773,7 @@ def export_github(
         # =============================
         # 4. Update spreadsheet jika diperlukan
         # =============================
-        confirm = (
+        confirm_sheet = (
             input(
                 f"\nUpdate data sheet [Nama,Repo] by Codename ke '{tab_name}'? (y/n) >> "
             )
@@ -778,7 +781,7 @@ def export_github(
             .lower()
         )
 
-        if confirm == "y":
+        if confirm_sheet == "y":
             sheet_id = tab_gid
             name_col_i = _COL_INDEX[NAME_COL]
             repo_col_i = _COL_INDEX[REPO_COL]
@@ -874,10 +877,22 @@ def export_github(
                     f"\nUpdate {len(classroom_data)} nama & repo ke spreadsheet selesai."
                 )
 
+        # Di dalam fungsi utama setelah coursework_id ditentukan
+        coursework_detail = (
+            service_classroom.courses()
+            .courseWork()
+            .get(courseId=course_id, id=coursework_id)
+            .execute()
+        )
+
+        # Ini adalah link ke instruksi/petunjuk tugas
+        instruction_link = coursework_detail.get("alternateLink", "")
+
         # =============================
         # 5. Simpan ke cache tunggal
         # =============================
         cache_data = {
+            "instruction_link": instruction_link,
             "submissions": classroom_data,
             "repo_list": repo_folder,
             "zero_score_list": zero_score,
@@ -899,7 +914,9 @@ def export_github(
     # =============================
     score_path = f"data_score/{tugas_ke}{course_code}-score.txt"
     deadline = _get_coursework_deadline(service_classroom, course_id, coursework_id)
-    header = f"#parameter\n- deadline: {deadline}\n"
+    header = (
+        f"#parameter\n- instruction_link: {instruction_link}\n- deadline: {deadline}\n"
+    )
 
     if not os.path.exists(score_path):
         with open(score_path, "w", encoding="utf-8") as f:
@@ -968,7 +985,31 @@ def export_github(
     else:
         print("⏭️  Download attachment dilewati.")
 
-    print("\nDownload submission history ke history.txt")
-    download_history(service_classroom, course_id, coursework_id, codename_to_folder)
+    confirm_dh = input("\nDownload submission history? (y/n) >> ").strip().lower()
+    if confirm_dh == "y":
+        print("\nDownload submission history ke history.txt")
+        download_history(
+            service_classroom, course_id, coursework_id, codename_to_folder
+        )
+    else:
+        print("⏭️  Download submission history dilewati.")
 
-    print(f"\nFolder dapat diakses di {target_local}")
+    print(f"\nInstruction Link: {instruction_link}")
+
+    # =============================
+    # Verifikasi Buka Folder & VS Code
+    # =============================
+    open_code = input("\nBuka folder di VS Code? (y/n) >> ").strip().lower()
+
+    if open_code == "y":
+        print(f"🚀 Membuka {target_local}...")
+
+        # Menggunakan shell=True agar bisa menjalankan command internal seperti 'cd'
+        # dan memanggil 'code' yang biasanya ada di PATH.
+        # Perintah: berpindah drive (jika perlu), cd ke folder, lalu buka VS Code.
+
+        cmd = f'cd /d "{target_local}" && code .'
+        subprocess.Popen(cmd, shell=True)
+    else:
+        print("\nSelesai. Jika ingin masuk manual, jalankan:")
+        print(f"cd /d {target_local} && code .")

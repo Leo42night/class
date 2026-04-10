@@ -74,8 +74,12 @@ def menu_loop(course_id, course_name, course_code):
                 print("Tidak ada assignment")
                 continue
 
+            # --- SORTING ---
+            # buat variabel baru agar list yang ditampilkan sinkron dengan urutan abjad
+            coursework_sorted = sorted(coursework, key=lambda x: x["title"])
+
             print("\n=== Pilih Work ===")
-            for i, w in enumerate(coursework, start=1):
+            for i, w in enumerate(coursework_sorted, start=1):
                 can_edit = w.get("associatedWithDeveloper", False)
                 status = "✅ YES Can Edit" if can_edit else "❌ NO (UI Created)"
                 print(f"{i}. {w['title']} | {status}")
@@ -88,8 +92,14 @@ def menu_loop(course_id, course_name, course_code):
 
             try:
                 idx = int(choice_work) - 1
-                work = coursework[idx]
-                work_menu(course_id, course_code, work)
+
+                # Pastikan mengambil data dari list yang SUDAH DISORTIR (coursework_sorted)
+                # Agar data yang dipilih sesuai dengan nomor yang tampil di layar
+                if 0 <= idx < len(coursework_sorted):
+                    work = coursework_sorted[idx]
+                    work_menu(course_id, course_code, work)
+                else:
+                    print("❌ Nomor tidak valid!")
 
             except Exception as e:
                 print(f"An exception occurred: {e}")

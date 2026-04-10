@@ -4,6 +4,7 @@
 
 import re
 from config.cred import get_service_courses, get_service_sheets
+import base64
 
 ROW_START = 2
 NAME_COL = "B"
@@ -18,7 +19,7 @@ _COL_INDEX = {col: i for i, col in enumerate("ABCDEFGHIJKLMNOPQRSTUVWXYZ")}
 def _parse_score_txt(code_class, tugas_ke, codenames: list[str]):
     """
     Parse file *-score.txt dan pasangkan ke codenames dari spreadsheet.
-    Ambil parameter, notes, minus 
+    Ambil parameter, notes, minus
     """
     token_to_codename: dict[str, str] = {}
     for cn in codenames:
@@ -27,8 +28,8 @@ def _parse_score_txt(code_class, tugas_ke, codenames: list[str]):
 
     students = {cn: {"notes": [], "minus": 0} for cn in codenames}
     current_codename = None
-    parameters: list[str] = []          # ← tambah
-    in_parameter_block = False          # ← tambah
+    parameters: list[str] = []  # ← tambah
+    in_parameter_block = False  # ← tambah
 
     with open(f"data_score/{tugas_ke}{code_class}-score.txt", encoding="utf-8") as f:
         for line in f:
@@ -50,8 +51,12 @@ def _parse_score_txt(code_class, tugas_ke, codenames: list[str]):
             if line.startswith(">"):
                 key = line[1:].strip().casefold()
                 # coba exact match dulu, fallback ke token (bagian setelah "_" terakhir)
-                key_token = key.split("_")[-1] if "_" in key else key   # ← cth: codename m1_arifqu -> ariqzu
-                matched = token_to_codename.get(key) or token_to_codename.get(key_token)  # ← fix
+                key_token = (
+                    key.split("_")[-1] if "_" in key else key
+                )  # ← cth: codename m1_arifqu -> ariqzu
+                matched = token_to_codename.get(key) or token_to_codename.get(
+                    key_token
+                )  # ← fix
                 current_codename = matched if matched else None
                 continue
 
@@ -68,7 +73,7 @@ def _parse_score_txt(code_class, tugas_ke, codenames: list[str]):
     for cn in students:
         students[cn]["score"] = 100 - students[cn]["minus"]
 
-    return students, parameters          # ← tambah return parameters
+    return students, parameters  # ← tambah return parameters
 
 
 def _get_tab_name(service_sheets, spreadsheet_id, tugas_ke):
@@ -170,9 +175,15 @@ def _print_table(table_data):
 
     print(f"\n{sep}\n{header}\n{sep}")
     for item in table_data:
-        note_short = (item["notes"][:35] + "..") if len(item["notes"]) > 35 else item["notes"]
+        note_short = (
+            (item["notes"][:35] + "..") if len(item["notes"]) > 35 else item["notes"]
+        )
         status = "📝 berubah (bold)" if item["changed"] else "  sama"
-        print(template.format(item["row"], item["codename"][:20], note_short, item["score"], status))
+        print(
+            template.format(
+                item["row"], item["codename"][:20], note_short, item["score"], status
+            )
+        )
 
     print(sep)
     changed = sum(1 for t in table_data if t["changed"])
@@ -192,69 +203,77 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
     codenames = [cn for _, cn in sheet_entries if cn]
 
     # --- 2. Parse file txt ---
-    students, parameters = _parse_score_txt(course_code, tugas_ke, codenames)   # ← unpack
+    students, parameters = _parse_score_txt(
+        course_code, tugas_ke, codenames
+    )  # ← unpack
     print(f"Score loaded: {len(students)} codename dari spreadsheet.")
     if parameters:
         print(f"Parameter ditemukan: {len(parameters)} baris.")
 
     # --- 3. Ambil score yang sudah ada di sheet ---
-    existing_scores = _fetch_existing_scores(service_sheets, spreadsheet_id, tab_name, sheet_entries)
+    existing_scores = _fetch_existing_scores(
+        service_sheets, spreadsheet_id, tab_name, sheet_entries
+    )
 
     # --- 4. Build updates & deteksi perubahan ---
-    value_updates = []   # untuk values().batchUpdate (notes + score)
-    bold_requests = []   # untuk spreadsheets().batchUpdate (format bold)
-    table_data    = []
+    value_updates = []  # untuk values().batchUpdate (notes + score)
+    bold_requests = []  # untuk spreadsheets().batchUpdate (format bold)
+    table_data = []
 
-    sheet_id   = _get_sheet_id(service_sheets, spreadsheet_id, tab_name)
+    sheet_id = _get_sheet_id(service_sheets, spreadsheet_id, tab_name)
     score_col_i = _COL_INDEX[SCORE_COL]
 
     for sheet_row, codename in sheet_entries:
         if not codename or codename not in students:
             continue
 
-        info          = students[codename]
-        score         = info["score"]
+        info = students[codename]
+        score = info["score"]
         notes_display = ", ".join(info["notes"])
-        notes_raw     = "\n".join(info["notes"])
-        prev_score    = existing_scores.get(sheet_row)
-        changed       = prev_score != score   # None != score → juga dianggap berubah
+        notes_raw = "\n".join(info["notes"])
+        prev_score = existing_scores.get(sheet_row)
+        changed = prev_score != score  # None != score → juga dianggap berubah
 
-        value_updates.append({
-            "range": f"{tab_name}!{NOTE_COL}{sheet_row}:{SCORE_COL}{sheet_row}",
-            "values": [[notes_raw, score]]
-        })
-
-        row_index = sheet_row - 1   # 0-based
-        bold_requests.append({
-            "repeatCell": {
-                "range": {
-                    "sheetId": sheet_id,
-                    "startRowIndex": row_index,
-                    "endRowIndex": row_index + 1,
-                    "startColumnIndex": score_col_i,
-                    "endColumnIndex": score_col_i + 1,
-                },
-                "cell": {
-                    "userEnteredFormat": {
-                        "textFormat": {"bold": changed}
-                    }
-                },
-                "fields": "userEnteredFormat.textFormat.bold",
+        value_updates.append(
+            {
+                "range": f"{tab_name}!{NOTE_COL}{sheet_row}:{SCORE_COL}{sheet_row}",
+                "values": [[notes_raw, score]],
             }
-        })
+        )
 
-        table_data.append({
-            "row": sheet_row,
-            "codename": codename,
-            "notes": notes_display,
-            "score": score,
-            "prev_score": prev_score,
-            "changed": changed,
-        })
+        row_index = sheet_row - 1  # 0-based
+        bold_requests.append(
+            {
+                "repeatCell": {
+                    "range": {
+                        "sheetId": sheet_id,
+                        "startRowIndex": row_index,
+                        "endRowIndex": row_index + 1,
+                        "startColumnIndex": score_col_i,
+                        "endColumnIndex": score_col_i + 1,
+                    },
+                    "cell": {"userEnteredFormat": {"textFormat": {"bold": changed}}},
+                    "fields": "userEnteredFormat.textFormat.bold",
+                }
+            }
+        )
+
+        table_data.append(
+            {
+                "row": sheet_row,
+                "codename": codename,
+                "notes": notes_display,
+                "score": score,
+                "prev_score": prev_score,
+                "changed": changed,
+            }
+        )
 
     _print_table(table_data)
 
     # --- 5. Konfirmasi sebelum update Sheet ---
+    sheet_url = f"https://docs.google.com/spreadsheets/d/{spreadsheet_id}/edit?gid={sheet_id}#gid={sheet_id}"
+    print(f"🔗 {sheet_url}")
     confirm = input("Update ke Google Sheet? (y/n) >> ").strip().lower()
     if confirm == "y":
         # tulis notes & score
@@ -262,7 +281,7 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
             spreadsheetId=spreadsheet_id,
             body={"valueInputOption": "USER_ENTERED", "data": value_updates},
         ).execute()
-        
+
         # tulis #parameter sebagai popup note di header notes
         if parameters:
             note_text = "\n".join(parameters)
@@ -270,23 +289,21 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
             service_sheets.spreadsheets().batchUpdate(
                 spreadsheetId=spreadsheet_id,
                 body={
-                    "requests": [{
-                        "updateCells": {
-                            "range": {
-                                "sheetId": sheet_id,
-                                "startRowIndex": ROW_START - 2,   # 0-based
-                                "endRowIndex":   ROW_START - 1,
-                                "startColumnIndex": _COL_INDEX[NOTE_COL],
-                                "endColumnIndex":   _COL_INDEX[NOTE_COL] + 1,
-                            },
-                            "rows": [{
-                                "values": [{
-                                    "note": note_text
-                                }]
-                            }],
-                            "fields": "note",
+                    "requests": [
+                        {
+                            "updateCells": {
+                                "range": {
+                                    "sheetId": sheet_id,
+                                    "startRowIndex": ROW_START - 2,  # 0-based
+                                    "endRowIndex": ROW_START - 1,
+                                    "startColumnIndex": _COL_INDEX[NOTE_COL],
+                                    "endColumnIndex": _COL_INDEX[NOTE_COL] + 1,
+                                },
+                                "rows": [{"values": [{"note": note_text}]}],
+                                "fields": "note",
+                            }
                         }
-                    }]
+                    ]
                 },
             ).execute()
             print(f"  📌 Parameter ditulis sebagai note di {note_cell}.")
@@ -298,24 +315,54 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
                 body={"requests": bold_requests},
             ).execute()
             changed_count = sum(1 for t in table_data if t["changed"])
-            print(f"  {changed_count} nilai berubah → bold, {len(bold_requests) - changed_count} tidak berubah → unbold.")
+            print(
+                f"  {changed_count} nilai berubah → bold, {len(bold_requests) - changed_count} tidak berubah → unbold."
+            )
 
         print("✅ Nilai berhasil dimasukkan ke Google Sheet.")
-        sheet_url = f"https://docs.google.com/spreadsheets/d/{spreadsheet_id}/edit?gid={sheet_id}#gid={sheet_id}"
-        print(f"🔗 {sheet_url}")
     else:
         print("⏭️  Update Sheet dilewati.")
 
     # --- 6. Update Classroom ---
+    # Membuat link dinamis berdasarkan ID yang digunakan dalam script
+    # --- Helper function untuk encoding ID ke Base64 (Google Style) ---
+    def encode_id(raw_id):
+        # Konversi ke string, lalu ke bytes, encode ke base64, dan bersihkan padding '='
+        return base64.urlsafe_b64encode(str(raw_id).encode()).decode().strip("=")
+
+    # Encode ID sebelum dimasukkan ke URL
+    course_id_encoded = encode_id(course_id)
+    coursework_id_encoded = encode_id(coursework_id)
+
+    # Membuat link dinamis yang sesuai dengan format web Classroom
+    classroom_url = (
+        f"https://classroom.google.com/c/{course_id_encoded}/a/{coursework_id_encoded}"
+        f"/submissions/by-status/and-sort-first-name/all/all"
+    )
+
+    print(f"\n🔗 Buka Classroom: {classroom_url}")
     confirm2 = input("\nUpdate ke Google Classroom? (y/n) >> ").strip().lower()
     if confirm2 != "y":
         print("⏭️  Update Classroom dilewati.")
         return
 
-    # hanya codename yang changed
-    changed_codenames = {t["codename"] for t in table_data if t["changed"]}
-    if not changed_codenames:
-        print("⏭️  Tidak ada nilai yang berubah, skip Classroom.")
+    # Pilihan mode update
+    print("\nPilih mode update Classroom:")
+    print("1. Hanya nilai yang berubah di Spreadsheet")
+    print("2. Semua nilai (Total Update)")
+    choice = input("Pilih (1/2) >> ").strip()
+
+    if choice == "1":
+        # Filter hanya codename yang berubah
+        target_codenames = {t["codename"] for t in table_data if t["changed"]}
+        mode_text = "hanya nilai yang berubah"
+    else:
+        # Ambil semua codename yang ada di table_data
+        target_codenames = {t["codename"] for t in table_data}
+        mode_text = "semua nilai"
+
+    if not target_codenames:
+        print("⏭️  Tidak ada data untuk di-update, skip Classroom.")
         return
 
     service = get_service_courses()
@@ -328,10 +375,10 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
     )
 
     subs = submissions.get("studentSubmissions", [])
-    print(f"\nSubmit {len(changed_codenames)} score yang berubah ke Classroom...")
+    print(f"\n🚀 Mengirim {len(target_codenames)} score ({mode_text}) ke Classroom...")
 
     for sub in subs:
-        user_id       = sub["userId"]
+        user_id = sub["userId"]
         submission_id = sub["id"]
 
         student = (
@@ -344,7 +391,7 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
         fullname = student["profile"]["name"]["fullName"].casefold()
 
         matched_codename = None
-        for codename in changed_codenames:
+        for codename in target_codenames:
             token = codename.split("_")[-1] if "_" in codename else codename
             if any(token in word for word in fullname.split()):
                 matched_codename = codename
@@ -354,8 +401,15 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
             continue
 
         score = students[matched_codename]["score"]
-        prev  = next(t["prev_score"] for t in table_data if t["codename"] == matched_codename)
-        print(f"  Update {fullname} ({matched_codename}) → {score}  (sebelumnya: {prev})")
+        # Ambil nilai sebelumnya untuk log tampilan
+        prev = next(
+            (t["prev_score"] for t in table_data if t["codename"] == matched_codename),
+            "N/A",
+        )
+
+        print(
+            f"  Update {fullname} ({matched_codename}) → {score} (sebelumnya: {prev})"
+        )
 
         service.courses().courseWork().studentSubmissions().patch(
             courseId=course_id,
@@ -364,7 +418,7 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
             updateMask="assignedGrade,draftGrade",
             body={"assignedGrade": score, "draftGrade": score},
         ).execute()
-    
+
     # --- Kembalikan Nilai (return) untuk semua submission ---
     print("\nMengembalikan nilai ke semua siswa...")
     returned_count = 0
@@ -381,5 +435,3 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
             print(f"  ⚠️  Gagal return submission {sub['id']}: {e}")
 
     print(f"✅ {returned_count}/{len(subs)} nilai dikembalikan ke siswa.")
-
-    print("✅ Nilai berhasil dimasukkan ke Classroom.")
