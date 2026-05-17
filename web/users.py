@@ -1,4 +1,4 @@
-# simple: ambil data student (course) -> send ke ppwl POST api/users
+# Init: ambil data student (course) -> send ke ppwl POST api/users
 import sys
 from config.cred import get_service_courses
 from config.env import env

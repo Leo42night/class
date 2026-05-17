@@ -1,3 +1,4 @@
+# mengurangi poin pada file json hasil query database ppwl
 import json
 
 # 1. Load the JSON file

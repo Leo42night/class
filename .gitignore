@@ -10,5 +10,8 @@ __pycache__
 .env
 secrets.txt
 data_score/*-score.txt
-data_tugas/*-work.json
+data_tugas/ppwl*.json
 data_cache/*.json
+repo.txt
+question_clean.json
+questions.json

@@ -49,6 +49,7 @@ def _get_auth_creds():
 
 SERVICE_ACCOUNT_FILE = "service-account.json"
 SERV_SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+REPO_PATH = "C:/Users/karma/repo"
 
 
 def get_service_sheets():

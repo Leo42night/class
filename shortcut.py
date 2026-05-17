@@ -1,4 +1,5 @@
 import subprocess
+from config.cred import REPO_PATH
 import os
 
 BAT_PATH = os.path.join(os.path.dirname(__file__), "C:/Tools/symlink.bat")
@@ -17,7 +18,7 @@ def create_symlink(folder_target, folder_link, name_file):
 X = "b"
 N = "6"
 create_symlink(
-    "C:/Users/ADVAN/repou/class/data_score", f"C:/repo/ppwl{N}{X}-sub", f"{X}-{N}-score.txt"
+    f"{REPO_PATH}/class/data_score", f"{REPO_PATH}/ppwl{N}{X}-sub", f"{X}-{N}-score.txt"
 )
 
 # shortcut.bat <target_path> <shortcut_dir> [name]

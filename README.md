@@ -1,5 +1,14 @@
-# API Classroom
+# API Management Class
+
 Untuk pengajar dalam mengelola classroom. Post tugas. Ambil data tugas (link Github, File lain-lain). Upload score ke spreadsheet & classroom.
+
+```bash
+# run this command
+python -m pip install -r requirements.txt
+# lalu run
+py main.py
+# login pakai Chrome
+```
 
 > integrasi ke Google Spreadsheet untuk laporan dan menyimpan catatan nilai.
 

@@ -1,4 +1,6 @@
-# fetch users, lalu match by email ke sheet, dan update kolom score. 
+# Rutin: fetch users, lalu match by email ke sheet, dan update kolom score. 
+# Tujuannya agar bisa lihat progress di sheet, tanpa harus cek satu-satu di web.
+# !! Pastikan kolom score di sheet di ubah tiap fase
 import sys
 import os
 
@@ -19,7 +21,7 @@ HEADERS = {
 TAB = "Nilai"
 START_ROW = 3
 EMAIL_COL = "U"
-SCORE_COL = "W"
+SCORE_COL = "Z" # fase 1: W, fase 2: Z, fase 3: AC, fase 4: AF
 
 
 def get_course_by_code(code):  # 'a' or 'b' -> cid, course_name

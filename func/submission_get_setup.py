@@ -5,7 +5,7 @@
 # 4. mkdir C:/ppwl<n><code>-sub/ -> copy file in exp/ -> run clone.txt & bun install
 # 5. Simpan zero_score ke *-score.txt -> buat shortcut ke file ini di C:/ppwl<n><code>-sub/
 
-from config.cred import get_service_courses, get_service_sheets
+from config.cred import get_service_courses, get_service_sheets, REPO_PATH
 import os
 import subprocess
 import shutil
@@ -22,10 +22,11 @@ REPO_COL = "C"
 CODENAME_COL = "F"
 
 _COL_INDEX = {col: i for i, col in enumerate("ABCDEFGHIJKLMNOPQRSTUVWXYZ")}
-EXP_FOLDER = "exp"
-REPO_FILE = "repo.txt"
-CACHE_FILE = "data_cache/classroom_data_{coursework_id}.json"  # Single cache file
-LINKS_FILE = "links.txt"  # in each repo
+EXP_FOLDER = f"{REPO_PATH}/class/exp"
+REPO_FILE = f"{REPO_PATH}/class/repo.txt"
+LINKS_FILE = f"{REPO_PATH}/class/links.txt"  # in each repo
+SYMLINK_BAT_PATH = f"{REPO_PATH}/class/symlink.bat"
+
 
 
 def _cache_path(coursework_id):
@@ -115,13 +116,12 @@ def create_symlink(folder_target, folder_link, name_file):
         os.makedirs(folder_link)
         print(f"Directory for symlink created: {folder_link}")
 
-    BAT_PATH = "C:/Tools/symlink.bat"
     target = os.path.abspath(f"{folder_target}/{name_file}")
     link = os.path.abspath(f"{folder_link}/{name_file}")
 
     for attempt in range(1, 3):  # max 2x percobaan
         result = subprocess.run(
-            [BAT_PATH, target, link],
+            [SYMLINK_BAT_PATH, target, link],
             capture_output=True,
             text=True,
             shell=True,
@@ -171,10 +171,10 @@ def copy_files(target_dir):
 
 
 # Setup List repo di local untuk dinilai
-def selective_clone(target_dir, bat_path: str = "sparse_clone.bat"):
+def selective_clone(target_dir):
     # Simpan path awal agar bisa kembali jika terjadi error di subfolder
     root_path = os.getcwd()
-
+    bat_path = f"{REPO_PATH}/class/sparse_clone.bat"
     try:
         # Pastikan .bat ada sekali saja sebelum loop
         bat_abs = os.path.abspath(bat_path)
@@ -256,12 +256,6 @@ def _file_hash(path, chunk_size=8192):
         while chunk := f.read(chunk_size):
             h.update(chunk)
     return h.hexdigest()
-
-
-def _drive_file_hash(service_drive, file_id):
-    """Ambil MD5 checksum file dari metadata Drive."""
-    meta = service_drive.files().get(fileId=file_id, fields="md5Checksum").execute()
-    return meta.get("md5Checksum")
 
 
 # MIME type Google Docs → format export
@@ -611,6 +605,21 @@ def download_submissions(
                         )
                     continue
 
+                # --- Jika link berupa IP Address ---
+                # Regex sederhana untuk mendeteksi format IP (0.0.0.0)
+                is_ip_address = re.search(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', url)
+                if is_ip_address:
+                    ip_ref_path = os.path.join(matched_folder, "ip_server.txt")
+                    # Simpan ke file khusus ip_server.txt agar mudah ditemukan
+                    with open(ip_ref_path, "a", encoding="utf-8") as f:
+                        if url not in existing_urls:
+                            f.write(f"{url}\n")
+                    print(f"  🌐 IP Server (EC2) terdeteksi & disimpan: {url}")
+                    # Tetap simpan ke LINKS_FILE juga jika diinginkan:
+                    if url not in existing_urls:
+                        with open(ref_path, "a", encoding="utf-8") as f:
+                            f.write(url + "\n")
+                    continue
                 if url in existing_urls:
                     print(f"  ⏭️  Link sudah ada (skip): {url}")
                     continue
@@ -685,6 +694,8 @@ def export_github(
         instruction_link = None
         classroom_data, repo_folder, zero_score = None, None, None
         use_cache = "n"
+
+    print(f"\nInstruction Link: {instruction_link}")
 
     if use_cache != "y" or not cache_data:
         print("\nMengambil submission dari Google Classroom...")
@@ -955,12 +966,12 @@ def export_github(
     # 8. Local setup
     # =============================
     create_symlink(
-        "C:/Users/ADVAN/repou/class/data_score",
-        f"C:/repo/ppwl{tugas_ke}{course_code}-sub",
+        f"{REPO_PATH}/class/data_score",
+        f"{REPO_PATH}/ppwl{tugas_ke}{course_code}-sub",
         f"{tugas_ke}{course_code}-score.txt",
     )
 
-    target_local = f"C:/repo/ppwl{tugas_ke}{course_code}-sub"
+    target_local = f"{REPO_PATH}/ppwl{tugas_ke}{course_code}-sub"
     copy_files(target_local)
     selective_clone(target_local)
 
@@ -993,8 +1004,6 @@ def export_github(
         )
     else:
         print("⏭️  Download submission history dilewati.")
-
-    print(f"\nInstruction Link: {instruction_link}")
 
     # =============================
     # Verifikasi Buka Folder & VS Code

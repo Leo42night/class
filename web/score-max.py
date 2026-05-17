@@ -1,4 +1,4 @@
-# ambil max score dari sheet (hitung dulu di sheet), push ke backend web ppwl
+# Rutin: ambil max score dari sheet (hitung dulu di sheet), push ke backend web ppwl
 import sys
 import os
 import requests

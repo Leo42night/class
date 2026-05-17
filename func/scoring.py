@@ -337,7 +337,7 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
     # Membuat link dinamis yang sesuai dengan format web Classroom
     classroom_url = (
         f"https://classroom.google.com/c/{course_id_encoded}/a/{coursework_id_encoded}"
-        f"/submissions/by-status/and-sort-first-name/all/all"
+        f"/submissions/by-status/and-sort-first-name/all"
     )
 
     print(f"\n🔗 Buka Classroom: {classroom_url}")
