@@ -10,7 +10,7 @@ from config.cred import service
 
 SPREADSHEET_ID = env.SPREADSHEET_ID_A
 TAB = "Nilai"
-RANGE = f"{TAB}!C3:C38"
+RANGE_GITHUB = f"{TAB}!C3:C38" # !!! Sesuaikan dengan jumlah data anda.
 
 sheet = service.spreadsheets()
 
@@ -23,7 +23,7 @@ for s in spreadsheet["sheets"]:
     print(s["properties"]["title"], s["properties"]["sheetId"])
 
 # ambil username
-result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE).execute()
+result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_GITHUB).execute()
 
 values = result.get("values", [])
 

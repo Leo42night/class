@@ -28,7 +28,6 @@ LINKS_FILE = f"{REPO_PATH}/class/links.txt"  # in each repo
 SYMLINK_BAT_PATH = f"{REPO_PATH}/class/symlink.bat"
 
 
-
 def _cache_path(coursework_id):
     os.makedirs("data_cache", exist_ok=True)
     return f"data_cache/classroom_data_{coursework_id}.json"
@@ -210,7 +209,7 @@ def selective_clone(target_dir):
                 )
                 continue
 
-            print(f"\n--- Memulai Selective Clone: {folder_name} ---")
+            # print(f"\n--- Memulai Selective Clone: {folder_name} ---")
 
             try:
                 # 5. Jalankan sparse_clone.bat dengan argumen repo_url dan folder_name
@@ -607,7 +606,7 @@ def download_submissions(
 
                 # --- Jika link berupa IP Address ---
                 # Regex sederhana untuk mendeteksi format IP (0.0.0.0)
-                is_ip_address = re.search(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', url)
+                is_ip_address = re.search(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}", url)
                 if is_ip_address:
                     ip_ref_path = os.path.join(matched_folder, "ip_server.txt")
                     # Simpan ke file khusus ip_server.txt agar mudah ditemukan
@@ -694,8 +693,6 @@ def export_github(
         instruction_link = None
         classroom_data, repo_folder, zero_score = None, None, None
         use_cache = "n"
-
-    print(f"\nInstruction Link: {instruction_link}")
 
     if use_cache != "y" or not cache_data:
         print("\nMengambil submission dari Google Classroom...")
@@ -911,6 +908,8 @@ def export_github(
             "course_id": course_id,
         }
         _save_cache(coursework_id, cache_data)
+
+    print(f"\nInstruction Link: {instruction_link}")
 
     # =============================
     # 6. Simpan file repo.txt

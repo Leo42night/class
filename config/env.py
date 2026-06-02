@@ -1,17 +1,11 @@
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-
 class Env:
-    SPREADSHEET_ID_A = os.getenv("SPREADSHEET_ID_A")
-    SPREADSHEET_ID_B = os.getenv("SPREADSHEET_ID_B")
+    SPREADSHEET_ID_A = "1sqrKm8z6by6G-J5E1uLISCzCBVvK_S2Nvg6-e6Aqbec"
+    SPREADSHEET_ID_B = "1T8uDx8yYscudLaY777woX5uXd5cGY5N1kMRgEYGAvhY"
     N_STUDENT_A = 22
     N_STUDENT_B = 36
     COURSE_ID_A = "825125683344"
     COURSE_ID_B = "825266594962"
-    API_URL = "http://localhost:3000/api"
+    API_URL = "http://localhost:3000"
 
     def get_config(self, course_code):
         if course_code == "b":

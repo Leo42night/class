@@ -61,36 +61,38 @@ if __name__ == "__main__":
             sys.exit()
 
         # --- TAMPILKAN DATA TERLEBIH DAHULU ---
-        print("\n" + "="*40)
+        print("\n" + "=" * 40)
         print(f"{'EMAIL':<30} | {'MAX SCORE':<10}")
         print("-" * 40)
         for item in valid_data:
             print(f"{item['email']:<30} | {item['score']:<10}")
-        print("="*40)
+        print("=" * 40)
         print(f"Total: {len(valid_data)} data siap dipost.")
 
         # --- KONFIRMASI ---
         confirm = input(f"\nKirim data ke {env.API_URL}/users/score? (y/n): ")
-        if confirm.lower() != 'y':
+        if confirm.lower() != "y":
             print("Proses dibatalkan.")
             sys.exit()
 
         # --- PROSES PUSH KE API ---
         print("\nMemproses push data...")
         for item in valid_data:
-            email = item['email']
-            score_max = item['score']
+            email = item["email"]
+            score_max = item["score"]
 
             payload = {"email": email, "score_max": int(score_max)}
             url = f"{env.API_URL}/users/score"
-            headers = {"Authorization": ""} # Isi token jika diperlukan
+            headers = {"Authorization": ""}  # Isi token jika diperlukan
 
             try:
                 response = requests.put(url, json=payload, headers=headers)
                 if response.status_code == 200:
                     print(f" Berhasil: {email} -> {score_max}")
                 else:
-                    print(f" Gagal: {email} | Status: {response.status_code} | {response.text}")
+                    print(
+                        f" Gagal: {email} | Status: {response.status_code} | {response.text}"
+                    )
             except Exception as e:
                 print(f" Error saat hit API untuk {email}: {str(e)}")
 

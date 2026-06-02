@@ -1,16 +1,6 @@
 # API Management Class
 
-Untuk pengajar dalam mengelola classroom. Post tugas. Ambil data tugas (link Github, File lain-lain). Upload score ke spreadsheet & classroom.
-
-```bash
-# run this command
-python -m pip install -r requirements.txt
-# lalu run
-py main.py
-# login pakai Chrome
-```
-
-> integrasi ke Google Spreadsheet untuk laporan dan menyimpan catatan nilai.
+Untuk pengajar dalam mengelola classroom. Post tugas. Ambil data tugas (link Github, File lain-lain). Upload data pengguna, score & note ke spreadsheet & classroom.
 
 ---
 > 🚨 Versi ini dibuat dengan asumsi Teacher mengajar 1 course dengan >1 sub course. contoh: class **ppwl-a** & **ppwl-b**. 
@@ -19,67 +9,57 @@ py main.py
 - 🚨 Perlu penyesuaian _pengurangan_ kode jika tidak ada sub-course
 ---
 
-Stuktur:
+# Stuktur
+
 ```bash
 setup.py # CLI App untuk menu yg jarang dipakai (setup name & Github profile in SpreadSheet)
 main.py # CLI App yang punya beberapa fungsi (perlu setup config\env.py)
-setup/ # fungsi yang dijalankan tidak rutin
+setup/ # fungsi yang dijalankan di awal (siapkan spreadsheet)
 func/ # fitur-fitur yang diakses main.py
 utils/ # fungsi tunggal untuk menjalankan perintah khusus & development testing.
 data_score/ # daftar data *.txt untuk fitur scoring.py 
 data_tugas/ # daftar data *.json template tugas untuk fitur post_coursework.py 
-web/ # fungsi untuk handle data course & sheet ke/dari web ppwl
+web/ # fungsi untuk handle data course & sheet ke/dari web quiz-code (tugas pengganti siswa)
+exp/ # kode utilitas yang dipakai menilai kode submisi repo.
 ```
+[Repo web quiz-code](https://github.com/Leo42night/quiz-student)
 
 ## Setup
-- Sesuaikan path untuk clone repo local di `submission_get_setup.py`
+- Sesuaikan path untuk clone repo local di `submission_get.py`
+
+## Setup
+1. Run `1.list-courses.py` untuk ambil course ID di akun anda. simpan di `env.py`.
+2. Siapkan [GSheet seperti ini](https://docs.google.com/spreadsheets/d/1sqrKm8z6by6G-J5E1uLISCzCBVvK_S2Nvg6-e6Aqbec/edit?usp=sharing)
+   - Buat tab `Nilai` berisi tab utama.
+   - Block & Copy Student names dari Classroom masukkan ke kolom A (nama) {anchor baris}.
+   - Buat Codename (kolom T) singkat sesuai alphabete (untuk nama folder submisi).
+   - Get Email & Github (dapat run berkala tiap ada submisi baru), kode ada di `setup/`.
+  
+
+```bash
+# run this command
+python -m pip install -r requirements.txt
+# lalu run
+py main.py
+# anda juga dapat pakai file `ppwl.bat`, masukkan ke folder yang diberi akses path.
+```
 
 ## Installation
 ```bash
-pip install python-dotenv google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
+pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
 ```
 ### Oauth Client
-- buat proyek di google cloud console
+- untuk akses [Classroom & Spreadsheet]. Buat proyek di google cloud console.
 - aktifkan API **Classroom** & **Sheet**
 - buat Oauth Desktop Type (save as **credentials.json**)
-```
-https://www.googleapis.com/auth/classroom.courses.readonly
-https://www.googleapis.com/auth/classroom.student-submissions.students.readonly
-https://www.googleapis.com/auth/classroom.rosters.readonly
-https://www.googleapis.com/auth/classroom.coursework.students
-```
-- Tambahkan scope ini, ke dalam:
+- Buka `config\cred.py`, Tambahkan isi **AUTH_SCOPES** ke dalam:
 ```
 APIs & Services
   -> Oauth consent screen 
   -> Data Access -> Add or Remove scope
-  -> paste-kan ke input text area di bagian "Manually add scopes"
+  -> paste-kan ke input text area di bagian "Manually add scopes" (tanpa koma, tanpa kutip)
 ```
 
-### Service Account
-format credentials (format Service Account) untuk edit Spreadsheet:
-> **IAM & Admin → Service Accounts**
-Setelah dibuat Service Accounts, masuk:
-```
-Keys
-  → Add Key
-  → Create new key
-  → JSON
-```
-Save as **service-account.json**
-```json
-{
-  "type": "service_account",
-  "project_id": "my-project",
-  "private_key_id": "xxxxxxxx",
-  "private_key": "-----BEGIN PRIVATE KEY-----\n....\n-----END PRIVATE KEY-----\n",
-  "client_email": "my-service@my-project.iam.gserviceaccount.com",
-  "client_id": "123456789",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token"
-}
-```
-📩 **Tambahkan email** ke file spreadsheet.
 Setelah di-setup kita dapat akses Classroom & Spreadsheet.
 
 📩 **Tambahkan SPREADSHEET_ID** ke **.env**.

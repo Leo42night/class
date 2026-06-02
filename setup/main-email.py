@@ -10,7 +10,7 @@ from config.cred import get_service_sheets, get_service_courses
 
 TAB = "Nilai"
 START_ROW = 3
-NAME_COL = "B"
+NAME_COL = "B" # sebagai anchor untuk deteksi baris
 EMAIL_COL = "U"
 
 

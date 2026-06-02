@@ -1,4 +1,4 @@
-# Perlu ada submisi coursework send link github dulu
+# Lakukan tiap ada submission yang kirim link github baru. sampai penuh.
 # Mengisi data Nama & Link Profile Github ke Spreadsheet (main tab) dari hasil submisi tugas (link github)
 # ambil username github di spreadsheet, lalu berikan link github.com/<username> yang sesuai value username
 # jadikan link tersebut sebagai request

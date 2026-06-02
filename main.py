@@ -1,7 +1,7 @@
 import sys
 import traceback
 from config.cred import get_service_courses
-from func.submission_get_setup import export_github
+from func.submission_get import export_github
 from func.scoring import run_scoring
 from func.post_coursework import run_data_tugas
 from config.env import env

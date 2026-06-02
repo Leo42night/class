@@ -377,61 +377,247 @@ def run_scoring(course_id, coursework_id, spreadsheet_id, course_code, tugas_ke)
     subs = submissions.get("studentSubmissions", [])
     print(f"\n🚀 Mengirim {len(target_codenames)} score ({mode_text}) ke Classroom...")
 
-    for sub in subs:
-        user_id = sub["userId"]
-        submission_id = sub["id"]
+    # --- OPTIMASI UTAMA: Ambil semua data profil siswa sekaligus ---
+    # Ini menghindari pemanggilan service.courses().students().get() berulang kali di dalam loop
+    print("🔄 Mengambil data profil siswa untuk pencocokan nama...")
+    try:
+        students_list = service.courses().students().list(courseId=course_id).execute()
+        # Buat mapping format { userId: fullName }
+        # handle pagination jika siswa > 30 (meskipun biasanya tidak sampai segitu)
+        student_profiles = {}
+        page_token = None
 
-        student = (
-            service.courses()
-            .students()
-            .get(courseId=course_id, userId=user_id)
-            .execute()
-        )
+        while True:
+            response = (
+                service.courses()
+                .students()
+                .list(courseId=course_id, pageToken=page_token)
+                .execute()
+            )
 
-        fullname = student["profile"]["name"]["fullName"].casefold()
+            for s in response.get("students", []):
+                student_profiles[s["userId"]] = s["profile"]["name"][
+                    "fullName"
+                ].casefold()
 
-        matched_codename = None
-        for codename in target_codenames:
-            token = codename.split("_")[-1] if "_" in codename else codename
-            if any(token in word for word in fullname.split()):
-                matched_codename = codename
+            page_token = response.get("nextPageToken")
+
+            if not page_token:
                 break
+    except Exception as e:
+        print(f"⚠️ Gagal mengambil daftar siswa: {e}")
+        return
 
-        if not matched_codename:
-            continue
+    # List untuk menampung submission_id yang akan di-return massal di Choice 2
+    submission_ids_to_return = []
 
-        score = students[matched_codename]["score"]
-        # Ambil nilai sebelumnya untuk log tampilan
-        prev = next(
-            (t["prev_score"] for t in table_data if t["codename"] == matched_codename),
-            "N/A",
-        )
+    # =================================================================
+    # MODE 1: HANYA NILAI YANG BERUBAH (Satu per satu)
+    # =================================================================
+    if choice == "1":
+        for sub in subs:
+            user_id = sub["userId"]
+            submission_id = sub["id"]
+            state = sub.get("state")  # Ambil state langsung dari list awal
 
-        print(
-            f"  Update {fullname} ({matched_codename}) → {score} (sebelumnya: {prev})"
-        )
+            fullname = student_profiles.get(user_id, "")
+            if not fullname:
+                print(f"⚠️ User {user_id} tidak ditemukan di students_list")
+                continue
 
-        service.courses().courseWork().studentSubmissions().patch(
-            courseId=course_id,
-            courseWorkId=coursework_id,
-            id=submission_id,
-            updateMask="assignedGrade,draftGrade",
-            body={"assignedGrade": score, "draftGrade": score},
-        ).execute()
+            matched_codename = None
 
-    # --- Kembalikan Nilai (return) untuk semua submission ---
-    print("\nMengembalikan nilai ke semua siswa...")
-    returned_count = 0
-    for sub in subs:
-        try:
-            service.courses().courseWork().studentSubmissions().return_(
+            fullname_lower = fullname.lower().strip()
+            fullname_parts = fullname_lower.split()
+
+            for codename in target_codenames:
+                codename_lower = codename.lower().strip()
+
+                # ==========================================
+                # RULE 1:
+                # jika ada underscore
+                # contoh: m3_rasyid
+                # cari token setelah underscore
+                # ==========================================
+                if "_" in codename_lower:
+                    token = codename_lower.split("_", 1)[1]
+
+                    if token in fullname_lower:
+                        matched_codename = codename
+                        break
+
+                # ==========================================
+                # RULE 2:
+                # tanpa underscore
+                # hanya cocok ke kata pertama fullname
+                # ==========================================
+                else:
+                    first_name = fullname_parts[0]
+
+                    if codename_lower == first_name:
+                        matched_codename = codename
+                        break
+
+            if not matched_codename:
+                continue
+
+            score = students[matched_codename]["score"]
+
+            prev = next(
+                (
+                    t["prev_score"]
+                    for t in table_data
+                    if t["codename"] == matched_codename
+                ),
+                "N/A",
+            )
+
+            print(
+                f"  Update {fullname} ({matched_codename}) → {score} (sebelumnya: {prev})"
+            )
+
+            # Patch Nilai langsung satu per satu
+            service.courses().courseWork().studentSubmissions().patch(
                 courseId=course_id,
                 courseWorkId=coursework_id,
-                id=sub["id"],
-                body={},
+                id=submission_id,
+                updateMask="assignedGrade,draftGrade",
+                body={"assignedGrade": score, "draftGrade": score},
             ).execute()
-            returned_count += 1
-        except Exception as e:
-            print(f"  ⚠️  Gagal return submission {sub['id']}: {e}")
 
-    print(f"✅ {returned_count}/{len(subs)} nilai dikembalikan ke siswa.")
+            # Langsung Return satu per satu (hanya jika statusnya TURNED_IN)
+            if state == "TURNED_IN":
+                try:
+                    service.courses().courseWork().studentSubmissions().return_(
+                        courseId=course_id,
+                        courseWorkId=coursework_id,
+                        id=submission_id,
+                        body={},
+                    ).execute()
+                    print(f"    ✅ Returned {submission_id}")
+                except Exception as e:
+                    print(f"    ⚠️ Gagal return {submission_id}: {e}")
+            else:
+                print(f"    Skip return (state={state})")
+
+    # =================================================================
+    # MODE 2: SEMUA NILAI / TOTAL UPDATE (Batch Update)
+    # =================================================================
+    else:
+        # Callback untuk memantau status antrean batch patch
+        def batch_patch_callback(request_id, response, exception):
+            if exception is not None:
+                print(f"  ⚠️ Gagal update salah satu siswa: {exception}")
+
+        batch_update = service.new_batch_http_request(callback=batch_patch_callback)
+
+        for sub in subs:
+            user_id = sub["userId"]
+            submission_id = sub["id"]
+            state = sub.get("state")
+
+            fullname = student_profiles.get(user_id, "")
+            if not fullname:
+                print(f"⚠️ User {user_id} tidak ditemukan di students_list")
+                continue
+
+            matched_codename = None
+
+            fullname_lower = fullname.lower().strip()
+            fullname_parts = fullname_lower.split()
+
+            for codename in target_codenames:
+                codename_lower = codename.lower().strip()
+
+                # ==========================================
+                # RULE 1:
+                # jika ada underscore
+                # contoh: m3_rasyid
+                # ambil bagian setelah underscore
+                # lalu search ke seluruh fullname
+                # ==========================================
+                if "_" in codename_lower:
+                    token = codename_lower.split("_", 1)[1]
+
+                    if token in fullname_lower:
+                        matched_codename = codename
+                        break
+
+                # ==========================================
+                # RULE 2:
+                # tanpa underscore
+                # hanya match dengan kata pertama fullname
+                # ==========================================
+                else:
+                    first_name = fullname_parts[0]
+
+                    if codename_lower == first_name:
+                        matched_codename = codename
+                        break
+
+            if not matched_codename:
+                continue
+
+            score = students[matched_codename]["score"]
+
+            prev = next(
+                (
+                    t["prev_score"]
+                    for t in table_data
+                    if t["codename"] == matched_codename
+                ),
+                "N/A",
+            )
+
+            print(
+                f"  [Queue Batch] {fullname} ({matched_codename}) → {score} (sebelumnya: {prev})"
+            )
+
+            # Daftarkan ke batch patch
+            req = (
+                service.courses()
+                .courseWork()
+                .studentSubmissions()
+                .patch(
+                    courseId=course_id,
+                    courseWorkId=coursework_id,
+                    id=submission_id,
+                    updateMask="assignedGrade,draftGrade",
+                    body={"assignedGrade": score, "draftGrade": score},
+                )
+            )
+            batch_update.add(req)
+
+            # Jika siap di-return, tampung ID-nya untuk batchReturn nanti
+            if state == "TURNED_IN":
+                submission_ids_to_return.append(submission_id)
+            else:
+                print(f"    ⏭ Skip antrean return (state={state})")
+
+        # Eksekusi Batch Update (Patch)
+        if len(batch_update._requests) > 0:
+            print(
+                f"\n⚡ Mengeksekusi batch update untuk {len(batch_update._requests)} siswa..."
+            )
+            batch_update.execute()
+            print("✅ Batch update nilai selesai.")
+
+        # Eksekusi Massal Pengembalian Tugas (Batch Return)
+        if submission_ids_to_return:
+            print(
+                f"\n⚡ Mengembalikan {len(submission_ids_to_return)} tugas sekaligus via batchReturn..."
+            )
+            try:
+                # API Google membatasi batchReturn maksimal 100 ID per satu kali request
+                for i in range(0, len(submission_ids_to_return), 100):
+                    chunk = submission_ids_to_return[i : i + 100]
+                    service.courses().courseWork().studentSubmissions().batchReturn(
+                        courseId=course_id,
+                        courseWorkId=coursework_id,
+                        body={"submissionIds": chunk},
+                    ).execute()
+                print(f"✅ Berhasil me-return seluruh tugas!")
+            except Exception as e:
+                print(f"⚠️ Gagal melakukan batch return: {e}")
+
+    print(f"✅ {len(subs)} nilai dikembalikan ke siswa.")
